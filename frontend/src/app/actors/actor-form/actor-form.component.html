@@ -1,0 +1,29 @@
+<h2>Create Actor</h2>
+<form [formGroup]="actorForm">
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input formControlName="name" matInput />
+    <mat-error>Name is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Date of birth</mat-label>
+    <input matInput formControlName="dateOfBirth" [matDatepicker]="picker" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <h3>Select Picture</h3>
+  <app-input-img
+    [currentImage]="actor?.image"
+    (onImageSelected)="onImageSelected($event)"
+  ></app-input-img>
+  <h3 class="mat-h4">Biography</h3>
+  <app-markdown
+    [markdownContent]="actor?.biography"
+    (changeMarkDown)="changeMarkDown($event)"
+  ></app-markdown>
+  <!-- <button mat-flat-button (click)="clearForm()" color="warn">Clear</button> -->
+  <button mat-flat-button color="primary" (click)="saveChanges()">
+    Save Changes
+  </button>
+</form>

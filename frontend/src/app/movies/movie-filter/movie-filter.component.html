@@ -1,0 +1,30 @@
+<h2>Search Movies</h2>
+<form [formGroup]="filterForm">
+  <mat-form-field appearance="outline">
+    <mat-label>Title</mat-label>
+    <input formControlName="title" matInput />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Genre</mat-label>
+    <mat-select formControlName="genreId">
+      <mat-option *ngFor="let genre of genres" [value]="genre.id">{{
+        genre.title
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div>
+    <mat-checkbox formControlName="upcoming" [checked]="filterForm.upcoming"
+      >Upcoming Releases</mat-checkbox
+    >
+    <mat-checkbox formControlName="inTheater">Is in Theaters?</mat-checkbox>
+  </div>
+  <div>
+    <button mat-flat-button (click)="clearForm()" color="warn">Clear</button>
+    <button mat-flat-button (click)="clearForm()" color="primary">
+      Save Changes
+    </button>
+  </div>
+</form>
+<app-movie-list [movies]="movies"></app-movie-list>

@@ -1,0 +1,35 @@
+<div class="row">
+  <mat-card class="m-1" *ngFor="let movie of movies">
+    <img [src]="movie?.image" alt="" />
+    <h5>{{ movie?.name }}</h5>
+
+    <button mat-flat-button color="accent">Accent</button>
+    <button class="ml-1" mat-flat-button color="primary">Accent</button>
+  </mat-card>
+</div>
+
+<div class="row">
+  <mat-card class="example-card m-1" *ngFor="let movie of movies">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>Shiba Inu</mat-card-title>
+      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+    </mat-card-header>
+    <img
+      mat-card-image
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXGAEK3dD60Y-CJOe1K7nQu11_q-6bBOfzAg&usqp"
+      alt="Photo of a Shiba Inu"
+    />
+    <mat-card-content>
+      <p>
+        The Shiba Inu is the smallest of the six original and distinct spitz
+        breeds of dog from Japan. A small, agile dog that copes very well with
+        mountainous terrain, the Shiba Inu was originally bred for hunting.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-flat-button color="accent">Accent</button>
+      <button class="ml-1" mat-flat-button color="primary">Accent</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

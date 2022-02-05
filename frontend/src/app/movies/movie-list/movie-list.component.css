@@ -1,0 +1,8 @@
+.example-card {
+  min-width: 250px;
+}
+
+.example-header-image {
+  background-image: url("https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg");
+  background-size: cover;
+}
