@@ -35,6 +35,7 @@ import { MovieFormComponent } from './movies/movie-form/movie-form.component';
 import { CustomSelectorComponent } from './utils/custom-selector/custom-selector.component';
 import { ActorsAutocompeleteComponent } from './actors/actors-autocompelete/actors-autocompelete.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ErrorsComponent } from './utils/errors/errors.component';
 // import '../../node_modules/leaflet/dist/images/marker-shadow.png';
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { HttpClientModule } from '@angular/common/http';
     MovieFormComponent,
     CustomSelectorComponent,
     ActorsAutocompeleteComponent,
+    ErrorsComponent,
 
   ],
   imports: [
