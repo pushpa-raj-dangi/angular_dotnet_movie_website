@@ -1,3 +1,6 @@
+import { GenreGetDto } from './../genre.model';
+import { GenreDto } from 'src/app/genres/genre.model';
+import { GenresService } from './../genres.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IndexGenresComponent implements OnInit {
 
-  constructor() { }
+  genres:GenreGetDto[] | any;
+  constructor(private genreSevice:GenresService) { }
 
   ngOnInit(): void {
+    this.genreSevice.getGenres().subscribe(x=>this.genres = x);
   }
 
 }

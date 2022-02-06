@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using backend.Filters;
 using backend.Models;
 using backend.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace backend.Controllers
         }
 
         [HttpGet]
+        [ServiceFilter(typeof(CustomFilter))]
         public async Task<ActionResult<Genre>> Genres()
         {
             return Ok(await _repository.Genres());

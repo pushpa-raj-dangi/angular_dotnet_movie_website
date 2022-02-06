@@ -1,2 +1,5 @@
 <h2>Genres</h2>
+<ul>
+  <li *ngFor="let item of genres">{{item.name}}</li>
+</ul>
 <button mat-flat-button color="primary" routerLink="/genres/create">Create Genre</button>

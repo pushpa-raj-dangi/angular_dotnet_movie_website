@@ -1,6 +1,9 @@
+using backend.Data;
+using backend.Filters;
 using backend.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,12 +24,23 @@ namespace backend
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddDbContext<StoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnecton")));
+            services.AddCors(options =>
+
+                options.AddDefaultPolicy(builder =>
+                {
+                    var frontend = Configuration.GetValue<string>("frontend_url");
+                    builder.WithOrigins(frontend).AllowAnyMethod().AllowAnyHeader();
+                }));
+
+            services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilter)));
+
             services.AddScoped<IRepository, MockRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "backend", Version = "v1" });
             });
+            services.AddTransient<CustomFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,7 +56,7 @@ namespace backend
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

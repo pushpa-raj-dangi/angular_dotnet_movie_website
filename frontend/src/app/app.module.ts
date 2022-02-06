@@ -34,6 +34,7 @@ import { MapComponent } from './utils/map/map.component';
 import { MovieFormComponent } from './movies/movie-form/movie-form.component';
 import { CustomSelectorComponent } from './utils/custom-selector/custom-selector.component';
 import { ActorsAutocompeleteComponent } from './actors/actors-autocompelete/actors-autocompelete.component';
+import { HttpClientModule } from '@angular/common/http';
 // import '../../node_modules/leaflet/dist/images/marker-shadow.png';
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ActorsAutocompeleteComponent } from './actors/actors-autocompelete/acto
     MovieFormComponent,
     CustomSelectorComponent,
     ActorsAutocompeleteComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -73,6 +75,7 @@ import { ActorsAutocompeleteComponent } from './actors/actors-autocompelete/acto
     MarkdownModule.forRoot(),
     LeafletModule,
     FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
