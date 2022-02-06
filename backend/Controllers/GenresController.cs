@@ -14,15 +14,13 @@ namespace backend.Controllers
 {
     public class GenresController : BaseApiController
     {
-        private readonly IRepository _repository;
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
 
-        public GenresController(IRepository repository, StoreContext context, IMapper mapper)
+        public GenresController(StoreContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
-            _repository = repository;
 
         }
 
@@ -38,8 +36,12 @@ namespace backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GenreDto>> Genre(int id)
         {
-            var genres = await _context.Genres.FindAsync(id);
-            return Ok(_mapper.Map<GenreDto>(genres));
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<GenreDto>(genre));
         }
 
 
@@ -47,23 +49,36 @@ namespace backend.Controllers
         public async Task<ActionResult> Post([FromBody] GenreCreateDto genreCreateDto)
         {
             var genre = _mapper.Map<Genre>(genreCreateDto);
+            var genreInDb = await _context.Genres.SingleOrDefaultAsync(x => x.Name.Equals(genre.Name));
+            if (genre.Name.ToUpper().Equals(genreInDb.Name.ToUpper()))
+                return BadRequest("Genre already exist.");
+
             await _context.AddAsync(genre);
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Put(Genre genre)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] GenreCreateDto genreCreateDto)
         {
-            await Task.Delay(1);
-            return Ok("ok");
+            var genre = _mapper.Map<Genre>(genreCreateDto);
+            genre.Id = id;
+            _context.Entry(genre).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete(Genre genre)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            await Task.Delay(1);
-            return Ok("ok");
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
+            {
+                return NotFound();
+            }
+            _context.Remove(genre);
+            await _context.SaveChangesAsync();
+            return Ok(200);
         }
     }
 }
