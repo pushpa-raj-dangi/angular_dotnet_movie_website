@@ -24,8 +24,8 @@ export class GenresService {
     return this.httpClient.get(this.url + "/" +id);
   }
 
-  editGenre(data:any){
-    return this.httpClient.put(data,this.url);
+  editGenre(id:number,data:any){
+    return this.httpClient.put(this.url+"/"+id,data);
   }
 
   deleteGenre(id:number){
