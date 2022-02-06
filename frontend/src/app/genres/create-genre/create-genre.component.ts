@@ -1,3 +1,4 @@
+import { GenresService } from './../genres.service';
 import { Component, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,13 +11,19 @@ import { GenreDto } from '../genre.model';
   styleUrls: ['./create-genre.component.css'],
 })
 export class CreateGenreComponent implements OnInit {
-  constructor(private router: Router, private formBuilder: FormBuilder) {}
+  constructor(private router: Router, private genreService:GenresService) {}
 
   ngOnInit(): void {}
 
   savechanges(genreCreate: GenreDto) {
-    console.log(genreCreate);
 
-    this.router.navigate(['/genres']);
+    this.genreService.createGenre(genreCreate).subscribe(()=>{
+      this.router.navigate(['/genres']);
+    },error=>{
+      console.log(error.error);
+
+    });
+
+
   }
 }

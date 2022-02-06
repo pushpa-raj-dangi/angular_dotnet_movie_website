@@ -1,3 +1,4 @@
+import { GenreDto } from 'src/app/genres/genre.model';
 import { GenreGetDto } from './genre.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -16,8 +17,8 @@ export class GenresService {
       return this.httpClient.get<GenreGetDto[]>(this.url);
   }
 
-  createGenre(data:any){
-    return this.httpClient.post(data,this.url);
+  createGenre(genre:GenreDto){
+    return this.httpClient.post(this.url,genre);
   }
   getGenre(id:number){
     return this.httpClient.get(this.url + "/" +id);

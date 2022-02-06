@@ -1,17 +1,21 @@
 using System.Threading.Tasks;
+using backend.Data;
 using backend.Filters;
 using backend.Models;
 using backend.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
     public class GenresController : BaseApiController
     {
         private readonly IRepository _repository;
+        private readonly StoreContext _context;
 
-        public GenresController(IRepository repository)
+        public GenresController(IRepository repository, StoreContext context)
         {
+            _context = context;
             _repository = repository;
 
         }
@@ -20,7 +24,7 @@ namespace backend.Controllers
         [ServiceFilter(typeof(CustomFilter))]
         public async Task<ActionResult<Genre>> Genres()
         {
-            return Ok(await _repository.Genres());
+            return Ok(await _context.Genres.ToListAsync());
         }
 
         [HttpGet("{id}")]
@@ -31,10 +35,11 @@ namespace backend.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Post(Genre genre)
+        public async Task<ActionResult> Post([FromBody] Genre genre)
         {
-            await Task.Delay(1);
-            return Ok("ok");
+            await _context.AddAsync(genre);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpPut]
