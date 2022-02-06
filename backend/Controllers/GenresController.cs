@@ -28,7 +28,6 @@ namespace backend.Controllers
 
         [HttpGet]
         [ServiceFilter(typeof(CustomFilter))]
-
         public async Task<ActionResult<GenreDto>> Genres()
         {
 
@@ -37,9 +36,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Genre>> Genre(int id)
+        public async Task<ActionResult<GenreDto>> Genre(int id)
         {
-            return Ok(await _repository.Genre(id));
+            var genres = await _context.Genres.FindAsync(id);
+            return Ok(_mapper.Map<GenreDto>(genres));
         }
 
 

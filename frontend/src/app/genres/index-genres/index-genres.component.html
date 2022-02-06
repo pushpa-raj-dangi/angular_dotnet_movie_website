@@ -8,8 +8,8 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <th mat-cell *matCellDef="let element">
-        <a routerLink="geners/edit/{{element.id}}" mat-flat-button color="primary">Edit</a>
-        <a routerLink="geners/edit/{{element.id}}" mat-flat-button color="warn">Delete</a>
+        <a routerLink="edit/{{element.id}}" mat-flat-button color="primary">Edit</a>
+        <a routerLink="edit/{{element.id}}" mat-flat-button color="warn">Delete</a>
       </th>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay">
