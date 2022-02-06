@@ -33,6 +33,7 @@ namespace backend
                     builder.WithOrigins(frontend).AllowAnyMethod().AllowAnyHeader();
                 }));
 
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilter)));
 
             services.AddScoped<IRepository, MockRepository>();

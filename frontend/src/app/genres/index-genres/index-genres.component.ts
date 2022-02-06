@@ -11,6 +11,7 @@ import { Component, OnInit } from '@angular/core';
 export class IndexGenresComponent implements OnInit {
 
   genres:GenreGetDto[] | any;
+  columnsToDisplay = ["name","actions"];
   constructor(private genreSevice:GenresService) { }
 
   ngOnInit(): void {
