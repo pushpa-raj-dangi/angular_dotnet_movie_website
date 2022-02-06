@@ -1,10 +1,9 @@
 import { GenresService } from './../genres.service';
-import { Component, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { firstLetterCapital } from 'src/app/validators/firstLetterCapital';
 import { GenreDto } from '../genre.model';
 import { parseApiError } from 'src/app/utils/utils';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-genre',
@@ -12,20 +11,33 @@ import { parseApiError } from 'src/app/utils/utils';
   styleUrls: ['./create-genre.component.css'],
 })
 export class CreateGenreComponent implements OnInit {
-  constructor(private router: Router, private genreService:GenresService) {}
+  constructor(
+    private router: Router,
+    private _snackBar: MatSnackBar,
+    private genreService: GenresService
+  ) {}
 
-  errors:string[]=[];
+  errors: string[] = [];
   ngOnInit(): void {}
+  error: any;
 
   savechanges(genreCreate: GenreDto) {
+    this.genreService.createGenre(genreCreate).subscribe(
+      () => {
+        this.router.navigate(['/genres']);
+      },
+      (error) => {
+        this.error = error.error;
+        this.openSnackBar();
+        this.errors = parseApiError(error);
+      }
+    );
+  }
 
-    this.genreService.createGenre(genreCreate).subscribe(()=>{
-      this.router.navigate(['/genres']);
-    },error=>{
-
-      this.errors = parseApiError(error);
-    });
-
-
+  openSnackBar() {
+    this._snackBar.open(this.error, 'close');
+    setTimeout(() => {
+      this._snackBar.dismiss();
+    }, 1500);
   }
 }

@@ -3,19 +3,28 @@
   <table mat-table [dataSource]="genres" class="mat-elevation-z8 table-index">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
-      <th mat-cell *matCellDef="let element">{{element.name}}</th>
+      <th mat-cell *matCellDef="let element">{{ element.name }}</th>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <th mat-cell *matCellDef="let element">
-        <a routerLink="edit/{{element.id}}" mat-flat-button color="primary">Edit</a>
-        <a routerLink="edit/{{element.id}}" mat-flat-button color="warn">Delete</a>
+        <a routerLink="edit/{{ element.id }}" mat-flat-button color="primary"
+          >Edit</a
+        >
+        <a mat-flat-button color="warn" (click)="openDialog(element.id)"
+          >Delete</a
+        >
       </th>
     </ng-container>
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay">
-
-    </tr>
-    <tr mat-row *matRowDef="let row; columns:columnsToDisplay"></tr>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
   </table>
 </ng-container>
-<button mat-flat-button color="primary" routerLink="/genres/create">Create Genre</button>
+<button
+  mat-flat-button
+  class="mt-1"
+  color="primary"
+  routerLink="/genres/create"
+>
+  Create Genre
+</button>

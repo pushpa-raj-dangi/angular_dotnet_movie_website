@@ -1,6 +1,9 @@
 <h2>Edit Genre</h2>
 
 <app-genre-form
-  [model]="[model]"
+  *ngIf="gener"
+  [model]="gener"
   (onSaveChanges)="saveChanges($event)"
 ></app-genre-form>
+
+<mat-spinner *ngIf="!gener"></mat-spinner>

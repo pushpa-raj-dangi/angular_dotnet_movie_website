@@ -6,31 +6,29 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GenresService {
- private url : string = environment.apiUrl+"genres";
+  private url: string = environment.apiUrl + 'genres';
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
-  getGenres():Observable<GenreGetDto[]>{
-      return this.httpClient.get<GenreGetDto[]>(this.url);
+  getGenres(): Observable<GenreGetDto[]> {
+    return this.httpClient.get<GenreGetDto[]>(this.url);
   }
 
-  createGenre(genre:GenreDto){
-    return this.httpClient.post(this.url,genre);
+  createGenre(genre: GenreDto) {
+    return this.httpClient.post(this.url, genre);
   }
-  getGenre(id:number){
-    return this.httpClient.get(this.url + "/" +id);
-  }
-
-  editGenre(id:number,data:any){
-    return this.httpClient.put(this.url+"/"+id,data);
+  getGenre(id: number): Observable<GenreGetDto> {
+    return this.httpClient.get<GenreGetDto>(this.url + '/' + id);
   }
 
-  deleteGenre(id:number){
-    return this.httpClient.delete(this.url+"/"+id);
+  editGenre(id: number, data: any) {
+    return this.httpClient.put(this.url + '/' + id, data);
   }
 
-
+  deleteGenre(id: number) {
+    return this.httpClient.delete(this.url + '/' + id);
+  }
 }

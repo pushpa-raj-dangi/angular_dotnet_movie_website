@@ -36,6 +36,8 @@ import { CustomSelectorComponent } from './utils/custom-selector/custom-selector
 import { ActorsAutocompeleteComponent } from './actors/actors-autocompelete/actors-autocompelete.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ErrorsComponent } from './utils/errors/errors.component';
+import { DialogComponent } from './utils/dialog/dialog.component';
+import { ToastComponent } from './utils/toast/toast.component';
 // import '../../node_modules/leaflet/dist/images/marker-shadow.png';
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { ErrorsComponent } from './utils/errors/errors.component';
     CustomSelectorComponent,
     ActorsAutocompeleteComponent,
     ErrorsComponent,
+    DialogComponent,
+    ToastComponent,
 
   ],
   imports: [

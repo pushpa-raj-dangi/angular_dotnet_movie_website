@@ -3,29 +3,36 @@ import { GenresService } from './../genres.service';
 import { Component, OnInit, Output } from '@angular/core';
 import { GenreDto, GenreGetDto } from '../genre.model';
 
+export interface DialogData {
+  condition: boolean;
+  id: number;
+}
+
 @Component({
   selector: 'app-edit-genre',
   templateUrl: './edit-genre.component.html',
   styleUrls: ['./edit-genre.component.css'],
 })
 export class EditGenreComponent implements OnInit {
-
-  model: GenreGetDto | any;
-
-  id:number | any;
-
-  constructor(private genreService:GenresService, private router:ActivatedRoute) {}
+  constructor(
+    private genreService: GenresService,
+    private router: ActivatedRoute,
+    private routerN: Router
+  ) {}
+  gener: GenreGetDto | any;
 
   ngOnInit(): void {
-    this.router.params.subscribe(x=>{this.id = x["id"]});
-    this.genreService.getGenre(this.id).subscribe(x=>{
-     this.model = x;
-     console.log(this.model);
-
-    })
+    this.router.params.subscribe((para: any) => {
+      this.genreService.getGenre(para['id']).subscribe((genre: GenreGetDto) => {
+        this.gener = genre;
+        console.log(this.gener);
+      });
+    });
   }
 
   saveChanges(genre: GenreDto) {
-    console.log(genre);
+    this.genreService.editGenre(this.gener.id, genre).subscribe(() => {
+      this.routerN.navigate(['/genres']);
+    });
   }
 }
