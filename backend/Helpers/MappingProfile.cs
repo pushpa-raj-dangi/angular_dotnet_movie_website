@@ -11,7 +11,7 @@ namespace backend.Helpers
             CreateMap<GenreDto, Genre>().ReverseMap();
             CreateMap<GenreCreateDto, Genre>();
 
-            CreateMap<ActorDto, Actor>();
+            CreateMap<ActorDto, Actor>().ReverseMap();
             CreateMap<ActorCreateDto, Actor>().ForMember(x => x.Picture, x => x.Ignore());
         }
     }

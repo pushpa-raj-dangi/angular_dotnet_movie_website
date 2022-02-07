@@ -1,4 +1,33 @@
-<p>index-actors works!</p>
-<button mat-flat-button color="primary" routerLink="/actors/create">
-  Create
+<h2>Actors</h2>
+<app-custom-list [list]="actors">
+<ng-container content>
+  <table mat-table [dataSource]="actors" class="mat-elevation-z8 table-index">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <th mat-cell *matCellDef="let element">{{ element.name }}</th>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <th mat-cell *matCellDef="let element">
+        <a routerLink="edit/{{ element.id }}" mat-flat-button color="primary"
+          >Edit</a
+        >
+        <a mat-flat-button color="warn" (click)="openDialog(element.id)"
+          >Delete</a
+        >
+      </th>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+  </table>
+</ng-container>
+</app-custom-list>
+<button
+  mat-flat-button
+  class="mt-1"
+  color="primary"
+  routerLink="/actors/create"
+>
+  Create Actor
 </button>
+

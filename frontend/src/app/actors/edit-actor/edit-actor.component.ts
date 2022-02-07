@@ -1,3 +1,5 @@
+import { ActivatedRoute } from '@angular/router';
+import { ActorsService } from './../actors.service';
 import { Component, OnInit } from '@angular/core';
 import { ActorDto, ActorModel } from '../actor.model';
 
@@ -7,7 +9,7 @@ import { ActorDto, ActorModel } from '../actor.model';
   styleUrls: ['./edit-actor.component.css'],
 })
 export class EditActorComponent implements OnInit {
-  constructor() {}
+  constructor(private actorService:ActorsService, private activateRoute:ActivatedRoute) {}
 
   actor: ActorDto | any = {
     name: 'ram',
@@ -16,7 +18,9 @@ export class EditActorComponent implements OnInit {
       'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
     biography: 'this is biography.',
   };
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.actorService.getById()
+  }
 
   saveChanges(actor: ActorModel) {
     console.log(actor);

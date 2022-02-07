@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
@@ -14,6 +15,14 @@ export class ActorsService {
   create(actor: ActorModel) {
     const formData = this.formData(actor);
     return this.httpClient.post(this.url, formData);
+  }
+
+  getAll():Observable<ActorModel[]>{
+    return this.httpClient.get<ActorModel[]>(this.url);
+  }
+
+  getById(id:number):Observable<ActorModel>{
+    return this.httpClient.get<ActorModel>(this.url+"/"+id);
   }
 
   private formData(actor: ActorModel): FormData | any {
