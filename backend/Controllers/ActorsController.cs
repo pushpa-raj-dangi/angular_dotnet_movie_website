@@ -27,7 +27,7 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ActorDto>> Actors()
+        public async Task<ActionResult<List<ActorDto>>> Actors()
         {
 
             var actors = await _context.Actors.OrderBy(actors => actors.Name).ToListAsync();

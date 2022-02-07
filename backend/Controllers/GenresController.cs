@@ -26,7 +26,7 @@ namespace backend.Controllers
 
         [HttpGet]
         [ServiceFilter(typeof(CustomFilter))]
-        public async Task<ActionResult<GenreDto>> Genres()
+        public async Task<ActionResult<List<GenreDto>>> Genres()
         {
 
             var genres = await _context.Genres.OrderBy(genres => genres.Name).ToListAsync();
