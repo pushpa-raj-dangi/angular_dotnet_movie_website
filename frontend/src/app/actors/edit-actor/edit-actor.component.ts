@@ -19,7 +19,7 @@ export class EditActorComponent implements OnInit {
     biography: 'this is biography.',
   };
   ngOnInit(): void {
-    this.actorService.getById()
+
   }
 
   saveChanges(actor: ActorModel) {
