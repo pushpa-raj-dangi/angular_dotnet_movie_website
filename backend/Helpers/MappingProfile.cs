@@ -1,5 +1,7 @@
 using AutoMapper;
 using backend.DTOs;
+using backend.DTOs.Actor;
+using backend.DTOs.Genre;
 using backend.Models;
 
 namespace backend.Helpers

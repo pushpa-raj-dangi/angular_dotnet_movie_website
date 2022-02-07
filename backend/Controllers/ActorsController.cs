@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
 using backend.DTOs;
+using backend.DTOs.Actor;
 using backend.Helpers;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;

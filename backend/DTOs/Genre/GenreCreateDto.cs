@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using backend.Validations;
 
-namespace backend.DTOs
+namespace backend.DTOs.Genre
 {
     public class GenreCreateDto
     {

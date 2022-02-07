@@ -1,6 +1,6 @@
 using System;
 
-namespace backend.DTOs
+namespace backend.DTOs.Actor
 {
     public class ActorDto
     {

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
 using backend.DTOs;
+using backend.DTOs.Genre;
 using backend.Filters;
 using backend.Models;
 using backend.Repositories;
