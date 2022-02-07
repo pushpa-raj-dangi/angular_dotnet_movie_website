@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
 using backend.DTOs;
+using backend.Helpers;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,12 @@ namespace backend.Controllers
     {
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
+        private readonly IStorageService _fileService;
+        private string containerName = "actors";
 
-        public ActorsController(StoreContext context, IMapper mapper)
+        public ActorsController(StoreContext context, IMapper mapper, IStorageService fileService)
         {
+            _fileService = fileService;
             _mapper = mapper;
             _context = context;
 
@@ -43,16 +47,17 @@ namespace backend.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ActorCreateDto actorCreateDto)
+        public async Task<ActionResult> Post([FromForm] ActorCreateDto actorCreateDto)
         {
             var actor = _mapper.Map<Actor>(actorCreateDto);
-            var actorInDb = await _context.Genres.SingleOrDefaultAsync(x => x.Name.Equals(actor.Name));
-            if (actor.Name.ToUpper().Equals(actorInDb.Name.ToUpper()))
-                return BadRequest("Actor already exist.");
 
+            if (actor.Picture != null)
+            {
+                actor.Picture = await _fileService.SaveFile(containerName, actorCreateDto.Picture);
+            }
             await _context.AddAsync(actor);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("{id}")]

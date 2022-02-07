@@ -49,8 +49,8 @@ namespace backend.Controllers
         public async Task<ActionResult> Post([FromBody] GenreCreateDto genreCreateDto)
         {
             var genre = _mapper.Map<Genre>(genreCreateDto);
-            var genreInDb = await _context.Genres.SingleOrDefaultAsync(x => x.Name.Equals(genre.Name));
-            if (genre.Name.ToUpper().Equals(genreInDb.Name.ToUpper()))
+            var genreInDb = await _context.Genres.SingleOrDefaultAsync(x => x.Name.Equals(genreCreateDto.Name));
+            if (genreCreateDto.Name.ToUpper().Equals(genreInDb.Name.ToUpper()))
                 return BadRequest("Genre already exist.");
 
             await _context.AddAsync(genre);

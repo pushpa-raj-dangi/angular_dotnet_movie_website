@@ -14,6 +14,5 @@ namespace backend.Models
 
         public string Biography { get; set; }
 
-
     }
 }

@@ -9,7 +9,7 @@ import { ActorDto, ActorModel } from '../actor.model';
 export class EditActorComponent implements OnInit {
   constructor() {}
 
-  actor: ActorDto = {
+  actor: ActorDto | any = {
     name: 'ram',
     dateOfBirth: new Date(),
     image:

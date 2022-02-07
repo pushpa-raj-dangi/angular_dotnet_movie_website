@@ -1,5 +1,7 @@
 using backend.Data;
 using backend.Filters;
+using backend.Helpers;
+using backend.Helpers.StorageService;
 using backend.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +36,7 @@ namespace backend
                 }));
 
             services.AddAutoMapper(typeof(Startup));
+            services.AddScoped<IStorageService, AzureStorageService>();
             services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilter)));
 
             services.AddScoped<IRepository, MockRepository>();
