@@ -51,7 +51,7 @@ namespace backend.Controllers
         {
             var actor = _mapper.Map<Actor>(actorCreateDto);
 
-            if (actor.Picture != null)
+            if (actorCreateDto.Picture != null)
             {
                 actor.Picture = await _fileService.SaveFile(containerName, actorCreateDto.Picture);
             }

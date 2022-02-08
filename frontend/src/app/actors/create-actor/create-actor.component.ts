@@ -14,6 +14,8 @@ export class CreateActorComponent implements OnInit {
   ngOnInit(): void {}
 
   savechanges(actor: ActorModel) {
+    console.log(actor);
+
     this.actorService.create(actor).subscribe((x) => {
       console.log(x);
       this.router.navigate(['/actors']);

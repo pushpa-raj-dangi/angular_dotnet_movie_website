@@ -36,7 +36,8 @@ namespace backend
                 }));
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped<IStorageService, AzureStorageService>();
+            services.AddScoped<IStorageService, LocalFileUploadService>();
+            services.AddHttpContextAccessor();
             services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilter)));
 
             services.AddScoped<IRepository, MockRepository>();
@@ -58,7 +59,7 @@ namespace backend
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors();
             app.UseAuthorization();

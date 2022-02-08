@@ -13,7 +13,13 @@ export class ActorsService {
   constructor(private httpClient: HttpClient) {}
 
   create(actor: ActorModel) {
-    const formData = this.formData(actor);
+
+
+    const formData = this.buildFormData(actor);
+    formData.forEach(function(x){
+        console.log(x);
+
+    })
     return this.httpClient.post(this.url, formData);
   }
 
@@ -25,19 +31,23 @@ export class ActorsService {
     return this.httpClient.get<ActorModel>(this.url+"/"+id);
   }
 
-  private formData(actor: ActorModel): FormData | any {
+
+
+  private buildFormData(actor: ActorModel): FormData {
     const formData = new FormData();
 
     formData.append('name', actor.name);
-    if (actor.biography) {
+
+    if (actor.biography){
       formData.append('biography', actor.biography);
     }
 
-    if (actor.dateOfBirth) {
+    if (actor.dateOfBirth){
       formData.append('dateOfBirth', formatDateFormData(actor.dateOfBirth));
     }
-    if (actor.image) {
-      formData.append('image', actor.image);
+
+    if (actor.image){
+      formData.append('picture', actor.image);
     }
 
     return formData;

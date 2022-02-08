@@ -46,6 +46,7 @@ namespace backend.Helpers.StorageService
             var extension = Path.GetExtension(file.FileName);
             var fileName = $"{Guid.NewGuid()}{extension}";
             string folder = Path.Combine(_env.WebRootPath, container);
+
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
@@ -57,11 +58,11 @@ namespace backend.Helpers.StorageService
                 await file.CopyToAsync(ms);
                 var content = ms.ToArray();
                 await File.WriteAllBytesAsync(route, content);
-
             }
+
             var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            var routeforDb = Path.Combine(url, container, fileName).Replace("\\", "/");
-            return routeforDb;
+            var routeForDB = Path.Combine(url, container, fileName).Replace("\\", "/");
+            return routeForDB;
         }
     }
 }
