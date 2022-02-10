@@ -1,5 +1,8 @@
 <h1>Edit Actor</h1>
 <app-actor-form
-  [actor]="actor"
+  *ngIf="model"
+  [actor]="model"
   (onSaveChanges)="saveChanges($event)"
 ></app-actor-form>
+
+<mat-spinner *ngIf="!model"></mat-spinner>

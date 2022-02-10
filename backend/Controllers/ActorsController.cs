@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
+using backend.DTOs;
 using backend.DTOs.Actor;
 using backend.Helpers;
 using backend.Models;
@@ -27,10 +28,14 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ActorDto>>> Actors()
+        public async Task<ActionResult<List<ActorDto>>> Actors([FromQuery] PaginationDto paginationDto)
         {
 
-            var actors = await _context.Actors.OrderBy(actors => actors.Name).ToListAsync();
+            var queryable = _context.Actors.AsQueryable();
+
+            await HttpContext.InsertParameterPaginatinInHeader(queryable);
+
+            var actors = await queryable.OrderBy(actors => actors.Name).Paginate(paginationDto).ToListAsync();
             return Ok(_mapper.Map<List<ActorDto>>(actors));
         }
 
@@ -61,24 +66,33 @@ namespace backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] ActorCreateDto actorCreateDto)
+        public async Task<ActionResult> Put(int id, [FromForm] ActorCreateDto actorCreateDto)
         {
-            var actor = _mapper.Map<Actor>(actorCreateDto);
-            actor.Id = id;
-            _context.Entry(actor).State = EntityState.Modified;
+            var result = await _context.Actors.FindAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            result = _mapper.Map(actorCreateDto, result);
+
+            if (actorCreateDto.Picture != null)
+            {
+                result.Picture = await _fileService.EditFile(containerName, actorCreateDto.Picture, result.Picture);
+            }
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var actors = await _context.Actors.FindAsync(id);
-            if (actors == null)
+            var actor = await _context.Actors.FindAsync(id);
+            if (actor == null)
             {
                 return NotFound();
             }
-            _context.Remove(actors);
+            await _fileService.DeleteFile(actor.Picture, containerName);
+            _context.Remove(actor);
             await _context.SaveChangesAsync();
             return Ok(200);
         }

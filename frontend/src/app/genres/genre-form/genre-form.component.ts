@@ -22,8 +22,6 @@ export class GenreFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
     });
 
-    console.log(this.model + 'from form');
-
     if (this.model !== undefined) {
       this.form.patchValue(this.model);
     }

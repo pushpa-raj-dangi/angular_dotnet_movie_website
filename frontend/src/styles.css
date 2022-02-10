@@ -4,6 +4,7 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -31,7 +32,7 @@ body {
   margin-top: 10px !important;
 }
 
-.table-index{
+.table-index {
   width: 100%;
   margin-top: 1rem;
 }

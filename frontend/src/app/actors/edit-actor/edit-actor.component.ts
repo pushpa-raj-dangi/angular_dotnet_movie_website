@@ -1,7 +1,8 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ActorsService } from './../actors.service';
 import { Component, OnInit } from '@angular/core';
 import { ActorDto, ActorModel } from '../actor.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-actor',
@@ -9,20 +10,28 @@ import { ActorDto, ActorModel } from '../actor.model';
   styleUrls: ['./edit-actor.component.css'],
 })
 export class EditActorComponent implements OnInit {
-  constructor(private actorService:ActorsService, private activateRoute:ActivatedRoute) {}
+  model: ActorDto | any;
+  constructor(
+    private actorService: ActorsService,
+    private activateRoute: ActivatedRoute,
+    private router: Router,
+    private _snackBar: MatSnackBar
+  ) {}
 
-  actor: ActorDto | any = {
-    name: 'ram',
-    dateOfBirth: new Date(),
-    image:
-      'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    biography: 'this is biography.',
-  };
   ngOnInit(): void {
-
+    this.activateRoute.params.subscribe((x) => {
+      this.actorService
+        .getById(x['id'])
+        .subscribe((response) => (this.model = response));
+    });
   }
 
   saveChanges(actor: ActorModel) {
-    console.log(actor);
+    this.actorService.edit(this.model.id, actor).subscribe(() => {
+      this._snackBar.open('Success', 'close', {
+        duration: 5,
+      });
+      this.router.navigate(['/actors']);
+    });
   }
 }

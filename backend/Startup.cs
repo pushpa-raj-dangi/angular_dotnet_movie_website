@@ -32,11 +32,11 @@ namespace backend
                 options.AddDefaultPolicy(builder =>
                 {
                     var frontend = Configuration.GetValue<string>("frontend_url");
-                    builder.WithOrigins(frontend).AllowAnyMethod().AllowAnyHeader();
+                    builder.WithOrigins(frontend).AllowAnyMethod().AllowAnyHeader().WithExposedHeaders(new string[] { "totalAmountOfRecords" });
                 }));
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped<IStorageService, LocalFileUploadService>();
+            services.AddScoped<IStorageService, AzureStorageService>();
             services.AddHttpContextAccessor();
             services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilter)));
 

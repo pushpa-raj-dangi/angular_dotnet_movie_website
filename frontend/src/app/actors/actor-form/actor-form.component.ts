@@ -8,17 +8,19 @@ import { ActorDto, ActorModel } from '../actor.model';
   styleUrls: ['./actor-form.component.css'],
 })
 export class ActorFormComponent implements OnInit {
-  actorForm: FormGroup | any;
-
-  @Output()
-  onSaveChanges = new EventEmitter<ActorModel>();
-  constructor(private fb: FormBuilder) {}
-
   @Input()
   actor: any;
 
   @Input()
   markdownContent: any;
+
+  actorForm: FormGroup | any;
+
+  @Output()
+  onSaveChanges = new EventEmitter<ActorModel>();
+  constructor(private fb: FormBuilder) {
+    console.log(this.actor);
+  }
 
   ngOnInit(): void {
     this.actorForm = this.fb.group({
@@ -30,6 +32,7 @@ export class ActorFormComponent implements OnInit {
     if (this.actor !== undefined) {
       this.actorForm.patchValue(this.actor);
     }
+    console.log('you ', this.actor);
   }
 
   onImageSelected(image: any) {

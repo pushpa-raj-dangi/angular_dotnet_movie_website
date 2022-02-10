@@ -1,4 +1,3 @@
-<h2>Create Actor</h2>
 <form [formGroup]="actorForm">
   <mat-form-field appearance="outline">
     <mat-label>Name</mat-label>
@@ -14,7 +13,7 @@
   </mat-form-field>
   <h3>Select Picture</h3>
   <app-input-img
-    [currentImage]="actor?.image"
+    [currentImage]="actor?.picture"
     (onImageSelected)="onImageSelected($event)"
   ></app-input-img>
   <h3 class="mat-h4">Biography</h3>

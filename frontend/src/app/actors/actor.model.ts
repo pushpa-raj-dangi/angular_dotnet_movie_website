@@ -9,6 +9,6 @@ export interface ActorDto {
   id: number;
   name: string;
   dateOfBirth: Date;
-  image: string;
+  picture: string;
   biography: string;
 }
