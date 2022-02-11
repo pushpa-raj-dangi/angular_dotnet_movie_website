@@ -1,6 +1,10 @@
 <h3>Edit Theater</h3>
-
 <app-theater-form
-  [theater]="theater"
+*ngIf="theater"
+  [model]="theater"
   (onSaveChangs)="saveChanges($event)"
 ></app-theater-form>
+
+<mat-spinner *ngIf="!theater"></mat-spinner>
+
+{{theater | json}}

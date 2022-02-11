@@ -39,7 +39,8 @@ import { ErrorsComponent } from './utils/errors/errors.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { ToastComponent } from './utils/toast/toast.component';
 import { CustomListComponent } from './utils/custom-list/custom-list.component';
-// import '../../node_modules/leaflet/dist/images/marker-shadow.png';
+
+
 @NgModule({
   declarations: [
     AppComponent,

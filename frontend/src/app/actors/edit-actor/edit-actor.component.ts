@@ -32,6 +32,10 @@ export class EditActorComponent implements OnInit {
         duration: 5,
       });
       this.router.navigate(['/actors']);
+    }, error => {
+      this._snackBar.open('Error on editing actor.', 'close', {
+        duration: 5,
+      });
     });
   }
 }

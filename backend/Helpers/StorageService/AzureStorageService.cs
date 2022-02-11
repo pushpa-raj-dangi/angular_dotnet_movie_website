@@ -9,7 +9,7 @@ namespace backend.Helpers.StorageService
 {
     public class AzureStorageService : IStorageService
     {
-        private string connectionString;
+        private readonly string connectionString;
 
         public AzureStorageService(IConfiguration configuration)
         {

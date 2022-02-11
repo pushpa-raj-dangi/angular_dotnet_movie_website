@@ -17,7 +17,7 @@ namespace backend.Controllers
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
         private readonly IStorageService _fileService;
-        private string containerName = "actors";
+        private readonly string containerName = "actors";
 
         public ActorsController(StoreContext context, IMapper mapper, IStorageService fileService)
         {

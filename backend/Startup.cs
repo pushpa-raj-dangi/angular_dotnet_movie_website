@@ -1,3 +1,4 @@
+using AutoMapper;
 using backend.Data;
 using backend.Filters;
 using backend.Helpers;
@@ -5,11 +6,14 @@ using backend.Helpers.StorageService;
 using backend.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 
 namespace backend
 {
@@ -26,7 +30,9 @@ namespace backend
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<StoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnecton")));
+            services.AddDbContext<StoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnecton"), sqlOption =>
+                sqlOption.UseNetTopologySuite()
+             ));
             services.AddCors(options =>
 
                 options.AddDefaultPolicy(builder =>
@@ -35,7 +41,15 @@ namespace backend
                     builder.WithOrigins(frontend).AllowAnyMethod().AllowAnyHeader().WithExposedHeaders(new string[] { "totalAmountOfRecords" });
                 }));
 
+
+
             services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326));
+            services.AddSingleton(provider => new MapperConfiguration(config =>
+            {
+                var geometry = provider.GetRequiredService<GeometryFactory>();
+                config.AddProfile(new MappingProfile(geometry));
+            }).CreateMapper());
             services.AddScoped<IStorageService, AzureStorageService>();
             services.AddHttpContextAccessor();
             services.AddControllers(options => options.Filters.Add(typeof(CustomExceptionFilter)));

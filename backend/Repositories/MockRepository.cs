@@ -6,7 +6,7 @@ namespace backend.Repositories
 {
     public class MockRepository : IRepository
     {
-        private List<Genre> _genres;
+        private readonly List<Genre> _genres;
 
         public MockRepository()
         {
