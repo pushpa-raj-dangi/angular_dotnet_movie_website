@@ -31,6 +31,7 @@
   <h4>Summary</h4>
   <app-markdown
     [markdownContent]="movie?.biography"
+    [label]="'Summary'"
     (changeMarkDown)="changeMarkDown($event)"
   ></app-markdown>
 
@@ -47,11 +48,11 @@
   ></app-custom-selector>
 
   <h4>Select Actor</h4>
-  <app-actors-autocompelete></app-actors-autocompelete>
+  <app-actors-autocompelete [selectedActors]="selectedActor"></app-actors-autocompelete>
   <button
     type="submit"
     mat-flat-button
-    (click)="saveChanges()"
+    (click)="saveMovieChanges()"
     [disabled]="movieForm.disabled"
     color="primary"
   >

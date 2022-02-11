@@ -43,14 +43,19 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ActorDto>> Actor(int id)
+        public async Task<ActionResult<MovieDto>> Movie(int id)
         {
-            var actor = await _context.Actors.FindAsync(id);
-            if (actor == null)
+            var movie = await _context.Movies.Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
+            .Include(x => x.MoviesTheaters).ThenInclude(x => x.Theater).Include(x => x.MoviesActors).ThenInclude(x => x.Actor)
+            .FirstOrDefaultAsync(x => x.Id == id);
+            if (movie == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ActorDto>(actor));
+            var dto = _mapper.Map<MovieDto>(movie);
+            dto.Actors = dto.Actors.OrderBy(x => x.Order).ToList();
+
+            return Ok(dto);
         }
 
 
@@ -114,7 +119,7 @@ namespace backend.Controllers
             return Ok(200);
         }
 
-        private void AnnotateActorOrder(Movie movie)
+        private static void AnnotateActorOrder(Movie movie)
         {
             if (movie.MoviesActors != null)
             {

@@ -10,6 +10,9 @@ export class MarkdownComponent implements OnInit {
   markdownContent: any;
   @Output()
   changeMarkDown = new EventEmitter<string>();
+
+  @Input()
+    label = "Value"
   constructor() {}
 
   ngOnInit(): void {}

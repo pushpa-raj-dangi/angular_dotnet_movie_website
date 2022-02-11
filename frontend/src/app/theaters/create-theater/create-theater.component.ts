@@ -10,9 +10,13 @@ import { TheaterCreateDto } from '../theater-create-dto';
   styleUrls: ['./create-theater.component.css'],
 })
 export class CreateTheaterComponent implements OnInit {
-  constructor(private theaterService:TheatersService,private router:Router, private snack:MatSnackBar) {}
+  loder: boolean = true;
+  constructor(private theaterService: TheatersService, private router: Router, private snack: MatSnackBar) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+   
+    
+  }
 
   saveChanges(theater: TheaterCreateDto) {
     

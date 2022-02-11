@@ -39,6 +39,7 @@ import { ErrorsComponent } from './utils/errors/errors.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { ToastComponent } from './utils/toast/toast.component';
 import { CustomListComponent } from './utils/custom-list/custom-list.component';
+import { DetailsComponent } from './movies/details/details.component';
 
 
 @NgModule({
@@ -73,6 +74,7 @@ import { CustomListComponent } from './utils/custom-list/custom-list.component';
     DialogComponent,
     ToastComponent,
     CustomListComponent,
+    DetailsComponent,
 
   ],
   imports: [

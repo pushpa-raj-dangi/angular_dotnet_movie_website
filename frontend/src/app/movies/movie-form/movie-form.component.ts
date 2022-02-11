@@ -1,7 +1,8 @@
+import { ActorsMovieDto } from './../../actors/actor.model';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MultiSelector } from 'src/app/utils/custom-selector/multi-selector.model';
-import { movieCreateDto } from '../movie.molde';
+import { MovieCreateDto } from '../movie.molde';
 
 @Component({
   selector: 'app-movie-form',
@@ -10,17 +11,23 @@ import { movieCreateDto } from '../movie.molde';
 })
 export class MovieFormComponent implements OnInit {
   @Output()
-  saveMovies = new EventEmitter<any>();
+  saveMovies:EventEmitter<MovieCreateDto> = new EventEmitter<MovieCreateDto>();
 
   @Input()
-  movie: movieCreateDto | any;
+  movie: MovieCreateDto | any;
 
   movieForm: FormGroup | any;
 
   @Input()
   nonSelectedGenres: MultiSelector[] = [];
+
+
   @Input()
   nonSelectedTheaters: MultiSelector[] = [];
+
+
+  selectedActor: ActorsMovieDto[] | any = [];
+  
 
   selectedGenres: MultiSelector[] = [];
   selectedTheaters: MultiSelector[] = [];
@@ -37,18 +44,25 @@ export class MovieFormComponent implements OnInit {
       poster: '',
       genresIds: '',
       theatersIds: '',
+      actors:''
     });
     if (this.movie !== undefined) {
       this.movieForm.patchValue(this.movie);
     }
   }
-  saveChanges() {
+  
+  saveMovieChanges() {
     const ids = this.selectedGenres.map((x) => x.key);
     const mids = this.selectedTheaters.map((x) => x.key);
     this.movieForm.get('genresIds').patchValue(ids);
     this.movieForm.get('theatersIds').patchValue(mids);
+
+    const actors = this.selectedActor.map((val: any) => {
+      return { id: val.id, character: val.character };
+    });
+
+    this.movieForm.get('actors').patchValue(actors);
     this.saveMovies.emit(this.movieForm.value);
-    console.log(this.movieForm.value);
   }
 
   onImageSelected(image: any) {

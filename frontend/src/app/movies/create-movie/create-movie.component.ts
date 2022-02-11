@@ -1,7 +1,10 @@
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MoviesService } from './../movies.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { movieCreateDto } from '../movie.molde';
+import { MovieCreateDto } from '../movie.molde';
 import { MultiSelector } from 'src/app/utils/custom-selector/multi-selector.model';
+import { ActorsMovieDto } from 'src/app/actors/actor.model';
 
 @Component({
   selector: 'app-create-movie',
@@ -10,12 +13,14 @@ import { MultiSelector } from 'src/app/utils/custom-selector/multi-selector.mode
 })
 export class CreateMovieComponent implements OnInit {
   @Input()
-  movie: movieCreateDto | any;
+  movie: MovieCreateDto | any;
 
+  selectedActor: ActorsMovieDto[] | any;
   noSelectedGenres:MultiSelector[] | any;
   noSelectedTheaters:MultiSelector[] | any;
 
-  constructor(private movieService:MoviesService) {}
+  constructor(private movieService: MoviesService, private snackbar: MatSnackBar, private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.movieService.postGet().subscribe(x=>{
@@ -37,7 +42,16 @@ export class CreateMovieComponent implements OnInit {
 
   }
 
-  saveChanges(movie: movieCreateDto) {
+  saveChanges(movie: MovieCreateDto) {
     console.log(movie);
+
+    this.movieService.create(movie).subscribe(x => {
+      this.snackbar.open('Movie created successfully', 'close', {
+        duration: 2000,
+      });
+      this.router.navigate(['/movies']);
+    }, error => {
+      this.snackbar.open(error.error.message, 'close', { duration: 3000 });
+    });
   }
 }

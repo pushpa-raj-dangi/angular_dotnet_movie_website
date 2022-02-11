@@ -18,7 +18,9 @@
   ></app-input-img>
   <h3 class="mat-h4">Biography</h3>
   <app-markdown
+
     [markdownContent]="actor?.biography"
+    [label]="'Biography'"
     (changeMarkDown)="changeMarkDown($event)"
   ></app-markdown>
   <!-- <button mat-flat-button (click)="clearForm()" color="warn">Clear</button> -->

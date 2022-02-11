@@ -14,6 +14,7 @@ import { MatTable } from '@angular/material/table';
 export class ActorsAutocompeleteComponent implements OnInit {
   control: FormControl | any = new FormControl();
 
+  @Input()
   selectedActors: ActorsMovieDto[] | any = [];
 
   actorsToDisplay:ActorsMovieDto[]=[];

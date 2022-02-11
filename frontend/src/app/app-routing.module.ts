@@ -1,3 +1,4 @@
+import { DetailsComponent } from './movies/details/details.component';
 import { EditGenreComponent } from './genres/edit-genre/edit-genre.component';
 import { EditMovieComponent } from './movies/edit-movie/edit-movie.component';
 import { EditTheaterComponent } from './theaters/edit-theater/edit-theater.component';
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: ' ', component: IndexGenresComponent },
   { path: 'movies/create', component: CreateMovieComponent },
   { path: 'movies/edit/:id', component: EditMovieComponent },
+  { path: 'movies/details/:id', component: DetailsComponent },
   { path: 'movies/filter', component: MovieFilterComponent },
 
   { path: 'actors', component: IndexActorsComponent },

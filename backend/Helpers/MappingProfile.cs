@@ -36,16 +36,70 @@ namespace backend.Helpers
               .ForMember(x => x.MoviesActors, options => options.MapFrom(MapMovieActors));
 
 
-            // CreateMap<Movie, MovieDTO>()
-            //                .ForMember(x => x.Genres, options => options.MapFrom(MapMoviesGenres))
-            //                .ForMember(x => x.MovieTheaters, options => options.MapFrom(MapMovieTheatersMovies))
-            //                .ForMember(x => x.Actors, options => options.MapFrom(MapMoviesActors));
+            CreateMap<Movie, MovieDto>()
+                           .ForMember(x => x.Genres, options => options.MapFrom(MapMoviesGenres))
+                           .ForMember(x => x.Theaters, options => options.MapFrom(MapMovieTheatersMovies))
+                           .ForMember(x => x.Actors, options => options.MapFrom(MapMoviesActors));
 
 
 
         }
 
 
+
+
+        private List<ActorsMovieDto> MapMoviesActors(Movie movie, MovieDto movieDto)
+        {
+            var actors = new List<ActorsMovieDto>();
+            if (movie.MoviesActors != null)
+            {
+                foreach (var item in movie.MoviesActors)
+                {
+                    actors.Add(new ActorsMovieDto
+                    {
+                        Id = item.ActorId,
+                        Name = item.Actor.Name,
+                        Order = item.Order,
+                        Picture = item.Actor.Picture,
+                        Character = item.Character,
+
+                    });
+                }
+            }
+            return actors;
+        }
+        private List<TheaterDto> MapMovieTheatersMovies(Movie movie, MovieDto movieDto)
+        {
+
+            var result = new List<TheaterDto>();
+            if (movie.MoviesTheaters != null)
+            {
+                foreach (var item in movie.MoviesTheaters)
+                {
+                    result.Add(new TheaterDto
+                    {
+                        Id = item.Theater.Id,
+                        Name = item.Theater.Name,
+                        Latitude = item.Theater.Location.Y,
+                        Longitude = item.Theater.Location.X
+                    });
+                }
+            }
+            return result;
+
+        }
+        private List<GenreDto> MapMoviesGenres(Movie movie, MovieDto movieDto)
+        {
+            var result = new List<GenreDto>();
+            if (movie.MoviesGenres != null)
+            {
+                foreach (var item in movie.MoviesGenres)
+                {
+                    result.Add(new GenreDto() { Id = item.GenreId, Name = item.Genre.Name });
+                }
+            }
+            return result;
+        }
         private List<MovieGenre> MapMoviesGenres(MovieCreateDto movieCerate, Movie movie)
         {
             var result = new List<MovieGenre>();

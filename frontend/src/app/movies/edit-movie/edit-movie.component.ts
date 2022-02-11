@@ -1,6 +1,6 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { movieCreateDto } from '../movie.molde';
+import { MovieCreateDto } from '../movie.molde';
 
 @Component({
   selector: 'app-edit-movie',
@@ -10,7 +10,7 @@ import { movieCreateDto } from '../movie.molde';
 export class EditMovieComponent implements OnInit {
   id: any;
   @Output()
-  movie: movieCreateDto | any = {
+  movie: MovieCreateDto | any = {
     name: 'name',
     summary: 'summmry',
     inTheater: true,
@@ -25,5 +25,5 @@ export class EditMovieComponent implements OnInit {
     this.activatedRouter.params.subscribe((x) => {});
   }
 
-  saveMovies(movie: movieCreateDto) {}
+  saveMovies(movie: MovieCreateDto) {}
 }
