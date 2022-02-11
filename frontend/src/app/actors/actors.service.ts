@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
 import { formatDateFormData } from '../utils/utils';
-import { ActorDto, ActorModel } from './actor.model';
+import { ActorDto, ActorModel, ActorsMovieDto } from './actor.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +29,14 @@ export class ActorsService {
       params,
     });
   }
+
+  searchByName(name:string):Observable<ActorsMovieDto[]>{
+    const headers = new HttpHeaders('Content-Type:application/json');
+
+    return this.httpClient.post<ActorsMovieDto[]>(`${this.url}/searchByName`,JSON.stringify(name),{headers});
+  }
+
+
   delete(id: number) {
     return this.httpClient.delete(this.url + '/' + id);
   }

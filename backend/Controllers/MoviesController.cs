@@ -5,6 +5,9 @@ using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.DTOs.Actor;
+using backend.DTOs.Genre;
+using backend.DTOs.Movie;
+using backend.DTOs.Theater;
 using backend.Helpers;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +15,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-    public class ActorsController : BaseApiController
+    public class MoviesController : BaseApiController
     {
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
         private readonly IStorageService _fileService;
         private readonly string containerName = "actors";
 
-        public ActorsController(StoreContext context, IMapper mapper, IStorageService fileService)
+        public MoviesController(StoreContext context, IMapper mapper, IStorageService fileService)
         {
             _fileService = fileService;
             _mapper = mapper;
@@ -50,50 +53,51 @@ namespace backend.Controllers
             return Ok(_mapper.Map<ActorDto>(actor));
         }
 
-        [HttpPost("searchByName")]
-        public async Task<ActionResult<List<ActorsMovieDto>>> SearchByName([FromBody] string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                return new List<ActorsMovieDto>();
-            }
-            return await _context.Actors.Where(x => x.Name.Contains(name))
-            .OrderBy(x => x.Name)
-            .Select(x => new ActorsMovieDto { Id = x.Id, Name = x.Name, Picture = x.Picture })
-            .Take(5)
-            .ToListAsync();
-        }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromForm] ActorCreateDto actorCreateDto)
+        public async Task<ActionResult> Post([FromForm] MovieCreateDto movieCreateDto)
         {
-            var actor = _mapper.Map<Actor>(actorCreateDto);
+            var movie = _mapper.Map<Movie>(movieCreateDto);
 
-            if (actorCreateDto.Picture != null)
+            if (movieCreateDto.Poster != null)
             {
-                actor.Picture = await _fileService.SaveFile(containerName, actorCreateDto.Picture);
+                movie.Poster = await _fileService.SaveFile(containerName, movieCreateDto.Poster);
             }
-            await _context.AddAsync(actor);
+            AnnotateActorOrder(movie);
+            await _context.AddAsync(movie);
             await _context.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromForm] ActorCreateDto actorCreateDto)
+        public async Task<ActionResult> Put(int id, [FromForm] MovieCreateDto movieCreateDto)
         {
             var result = await _context.Actors.FindAsync(id);
             if (result == null)
             {
                 return NotFound();
             }
-            result = _mapper.Map(actorCreateDto, result);
+            result = _mapper.Map(movieCreateDto, result);
 
-            if (actorCreateDto.Picture != null)
+            if (movieCreateDto.Poster != null)
             {
-                result.Picture = await _fileService.EditFile(containerName, actorCreateDto.Picture, result.Picture);
+                result.Picture = await _fileService.EditFile(containerName, movieCreateDto.Poster, result.Picture);
             }
             await _context.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpGet("PostGet")]
+        public async Task<ActionResult<MoviePostGetDto>> GetPost()
+        {
+            var theaters = await _context.Theaters.OrderBy(x => x.Name).ToListAsync();
+
+            var genres = await _context.Genres.OrderBy(x => x.Name).ToListAsync();
+
+            var theatersDto = _mapper.Map<List<TheaterDto>>(theaters);
+            var gernesDto = _mapper.Map<List<GenreDto>>(genres);
+
+            return new MoviePostGetDto { Genres = gernesDto, Theaters = theatersDto };
         }
 
         [HttpDelete("{id}")]
@@ -108,6 +112,17 @@ namespace backend.Controllers
             _context.Remove(actor);
             await _context.SaveChangesAsync();
             return Ok(200);
+        }
+
+        private void AnnotateActorOrder(Movie movie)
+        {
+            if (movie.MoviesActors != null)
+            {
+                for (int i = 0; i < movie.MoviesActors.Count; i++)
+                {
+                    movie.MoviesActors[i].Order = i;
+                }
+            }
         }
     }
 }

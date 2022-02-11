@@ -17,14 +17,10 @@ export class MovieFormComponent implements OnInit {
 
   movieForm: FormGroup | any;
 
-  nonSelectedGenres: MultiSelector[] = [
-    { key: 1, value: 'drama' },
-    { key: 2, value: 'comedy' },
-  ];
-  nonSelectedTheaters: MultiSelector[] = [
-    { key: 1, value: 'jaya nepal' },
-    { key: 2, value: 'chabahil' },
-  ];
+  @Input()
+  nonSelectedGenres: MultiSelector[] = [];
+  @Input()
+  nonSelectedTheaters: MultiSelector[] = [];
 
   selectedGenres: MultiSelector[] = [];
   selectedTheaters: MultiSelector[] = [];

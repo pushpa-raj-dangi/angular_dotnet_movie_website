@@ -1,5 +1,7 @@
+import { ActorsService } from './../actors.service';
+import { ActorsMovieDto } from './../actor.model';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatTable } from '@angular/material/table';
@@ -12,54 +14,55 @@ import { MatTable } from '@angular/material/table';
 export class ActorsAutocompeleteComponent implements OnInit {
   control: FormControl | any = new FormControl();
 
-  selectedActors: any = [];
-  columnsToDisplay: any = ['picture', 'name', 'character', 'actions'];
-  @ViewChild(MatTable) table: MatTable<any> | any;
-  actors = [
-    {
-      name: 'Tom holland',
-      picture:
-        'https://media.gq-magazine.co.uk/photos/60379abff70f2de7ce07c306/master/w_1600,c_limit/04-21_TH_Online4.jpg',
-    },
-    {
-      name: 'Harry porter',
-      picture:
-        'https://media.gq-magazine.co.uk/photos/60379abff70f2de7ce07c306/master/w_1600,c_limit/04-21_TH_Online4.jpg',
-    },
-  ];
-  originalsActor = this.actors;
+  selectedActors: ActorsMovieDto[] | any = [];
 
-  constructor() {}
+  actorsToDisplay:ActorsMovieDto[]=[];
 
+
+
+
+  columnsToDisplay = ['picture', 'name', 'character', 'actions']
+
+  @ViewChild(MatTable)
+  table: MatTable<any> | any;
+
+  constructor(private actorsService:ActorsService) {
+
+  }
   ngOnInit(): void {
-    this.control.valueChanges.subscribe((value: any) => {
-      this.actors = this.originalsActor;
-      this.actors = this.actors.filter(
-        (actor) => actor.name.indexOf(value) !== -1
-      );
-    });
-    if (this.table !== undefined) {
+    this.control.valueChanges.subscribe((value:any) => {
+      this.actorsService.searchByName(value).subscribe(actors => {
+        console.log("actors",actors);
+
+        this.actorsToDisplay = actors;
+      });
+    })
+  }
+
+  optionSelected(event: MatAutocompleteSelectedEvent){
+    console.log(event.option.value);
+
+    this.control.patchValue('');
+
+    if (this.selectedActors.findIndex((x:any) => x.id == event.option.value.id) !== -1){
+      return;
+    }
+
+    this.selectedActors.push(event.option.value);
+    if (this.table !== undefined){
       this.table.renderRows();
     }
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent) {
-    this.selectedActors.push(event.option.value);
-    this.control.patchValue('');
-    console.log(event.option.value);
-  }
-  remove(element: any) {
-    const index = this.selectedActors.findIndex(
-      (a: any) => a.name === element.name
-    );
+  remove(actor:any){
+    const index = this.selectedActors.findIndex((a:any) => a.name === actor.name);
     this.selectedActors.splice(index, 1);
     this.table.renderRows();
   }
 
-  dropped(event: CdkDragDrop<any[]>) {
-    const previousIndex = this.selectedActors.findIndex(
-      (a: any) => a === event.item.data
-    );
+  dropped(event: CdkDragDrop<any[]>){
+    const previousIndex = this.selectedActors.findIndex((actor:any) => actor === event.item.data);
     moveItemInArray(this.selectedActors, previousIndex, event.currentIndex);
+    this.table.renderRows();
   }
 }
