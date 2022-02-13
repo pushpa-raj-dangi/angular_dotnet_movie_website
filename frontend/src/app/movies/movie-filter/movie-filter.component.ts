@@ -1,5 +1,13 @@
+import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
+import { GenresService } from 'src/app/genres/genres.service';
+import { movieDto } from './../movie.molde';
+import { GenreDto } from 'src/app/genres/genre.model';
+import { MoviesService } from './../movies.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { HttpResponse } from '@angular/common/http';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-movie-filter',
@@ -8,91 +16,123 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class MovieFilterComponent implements OnInit {
   filterForm: FormGroup | any;
-  genres = [
-    { id: 1, title: 'Drama' },
-    { id: 2, title: 'Comedy' },
-    { id: 3, title: 'Scifi' },
-  ];
+  genres: GenreDto[] | any;
 
-  movies = [
-    {
-      id: 1,
-      name: 'movie1',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 2,
-      name: 'movie2',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 3,
-      name: 'movie3',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 4,
-      name: 'movie4',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 5,
-      name: 'movie5',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 6,
-      name: 'movie6',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 7,
-      name: 'movie7',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-    {
-      id: 8,
-      name: 'movie8',
-      image:
-        'https://media.services.cinergy.ch/media/cinemanteaser174x240/af96a6ea858dd5fba7feb1e41ee2f8d30d804a57.jpg',
-    },
-  ];
+  movies: movieDto[] | any;
 
-  originalMovies = this.movies;
-  constructor(private fb: FormBuilder) {}
+  perPage = 10;
+
+  initialFormValue: any;
+
+  currentPage = 1;
+  limit:any;
+
+
+  constructor(private fb: FormBuilder, private activatedRouter: ActivatedRoute, private movieService: MoviesService, private genreService: GenresService, private location: Location) { }
 
   ngOnInit(): void {
     this.filterForm = this.fb.group({
-      title: '',
+      name: '',
       genreId: '',
-      upcoming: false,
+      upcomings: false,
       inTheater: false,
     });
 
-    this.filterForm.valueChanges.subscribe((values: any) => {
-      console.log(values);
+    this.initialFormValue = this.filterForm.value;
+    this.readParamsFromUrl();
 
-      this.movies = this.originalMovies;
-      this.filterMovies(values);
-    });
+
+    this.genreService.getGenres().subscribe((genres: any) => {
+      this.genres = genres;
+
+      this.filterMovies(this.filterForm.value);
+      this.filterForm.valueChanges.subscribe((values: any) => {
+        console.log(values);
+
+        this.filterMovies(values);
+        this.writeParamsInUrl();
+      });
+      
+    })
+    
   }
 
   clearForm() {
-    this.filterForm.reset();
+    this.filterForm.patchValue(this.initialFormValue);
   }
 
-  filterMovies(values: any) {
-    if (values.title) {
-      this.movies = this.movies.filter(
-        (m) => m.name.indexOf(values.title) !== -1
-      );
+
+  private readParamsFromUrl()
+  {
+    this.activatedRouter.queryParams.subscribe((params: any) => {
+      var obj:any = {};
+      if (params.name) {
+        obj.name = params.name;
+      }
+      if (params.genreId) {
+        obj.genreId = Number(params.genreId);
+      }
+      if (params.upcomings) {
+        obj.upcomings = params.upcomings;
+      }
+
+      if (params.inTheater) {
+        obj.inTheater = params.inTheater;
+      }
+
+      if (params.perPage) {
+        this.perPage = params.perPage;
+      }
+      this.filterForm.patchValue(obj);
+    })
+}
+  private writeParamsInUrl() {
+    const queryString = [];
+    const formValues = this.filterForm.value;
+
+    if (formValues.name) {
+      formValues.push(`name=${formValues.name}`)
+    };
+    if (formValues.gerneId != '0') {
+      queryString.push(`genreId=${formValues.genreId}`);
     }
+
+    if (formValues.upcomings) {
+      queryString.push(`upcomings=${formValues.upcomings}`);
+    }
+
+    if (formValues.inTheater)
+    {
+           queryString.push(`inTheater=${formValues.inTheater}`);
+
+    }
+    queryString.push(`page=${this.currentPage}`);
+    queryString.push(`page=${this.currentPage}`);
+    this.location.replaceState('movies/filter', queryString.join('&'));
+      
   }
+
+  paginatorUpdate(event:PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.perPage = event.pageSize;
+    this.writeParamsInUrl();
+    this.filterMovies(this.filterForm.value);
+  }
+
+  onDelete() {
+    this.filterMovies(this.filterForm.value);
+  }
+
+  
+  filterMovies(values: any) {
+    values.page = this.currentPage;
+    values.perPage = this.perPage;
+
+    this.movieService.filter(values).subscribe((response: HttpResponse<movieDto[]> | any) => {
+      this.movies = response.body;
+      this.limit = response.headers.get("perPage");
+    })
+  }
+
+  
 }

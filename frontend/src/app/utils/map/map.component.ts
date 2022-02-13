@@ -1,4 +1,4 @@
-import { Coordinate } from './coordinate';
+import { Coordinate, CoordinateWithMessage } from './coordinate';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { icon, latLng, LeafletMouseEvent, marker, Marker, tileLayer } from 'leaflet';
 

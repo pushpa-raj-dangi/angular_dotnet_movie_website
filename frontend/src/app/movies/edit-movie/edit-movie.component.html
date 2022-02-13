@@ -1,6 +1,14 @@
 <h1>Edit Actor</h1>
 
 <app-movie-form
+*ngIf="movie"
   [movie]="movie"
+  [title]="'Edit Movie'" 
+  [nonSelectedGenres]="nonSelectedGenres" 
+  [nonSelectedTheaters]="nonSelectedTheatres"
+  [selectedActor]="selectedActors"
+  [selectedGenres]="selectedGenres"
+
+
   (saveMovies)="saveMovies($event)"
 ></app-movie-form>

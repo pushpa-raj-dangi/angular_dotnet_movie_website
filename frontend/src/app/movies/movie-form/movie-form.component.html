@@ -1,54 +1,73 @@
 <form [formGroup]="movieForm">
-  <mat-form-field appearance="outline">
+<h1>{{title}}</h1>
+  <div class="d-flex">
+    <mat-form-field appearance="outline">
     <mat-label>Name</mat-label>
     <input formControlName="name" matInput />
     <mat-error>Name is required.</mat-error>
   </mat-form-field>
 
-  <div>
-    <mat-checkbox formControlName="inTheater">In Theaters</mat-checkbox>
-  </div>
-
-  <mat-form-field appearance="outline">
+  <mat-form-field class="ml-1" appearance="outline">
     <mat-label>Trailer</mat-label>
     <input formControlName="trailer" matInput />
   </mat-form-field>
-  <br />
-
-  <mat-form-field appearance="outline">
+  </div>
+  <div class="d-flex">
+    <mat-form-field appearance="outline">
     <mat-label>Released</mat-label>
     <input matInput formControlName="releaseDate" [matDatepicker]="picker" />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
+  <br />
+    <div class="ml-1">
+    <mat-checkbox formControlName="inTheater">In Theaters</mat-checkbox>
+  </div>
+  </div>
+  <br>
+ 
 
-  <h4>Select the poster</h4>
+   
+  <div class="d-flex"> 
+    <div>
+      <h4>Select the poster</h4>
   <app-input-img
     [currentImage]="movie?.image"
     (onImageSelected)="onImageSelected($event)"
   ></app-input-img>
 
-  <h4>Summary</h4>
-  <app-markdown
-    [markdownContent]="movie?.biography"
-    [label]="'Summary'"
-    (changeMarkDown)="changeMarkDown($event)"
-  ></app-markdown>
+    </div>
+<div>
 
   <h4>Select Theater</h4>
   <app-custom-selector
     [selectedItems]="selectedTheaters"
     [nonSelectedItems]="nonSelectedTheaters"
-  ></app-custom-selector>
-
+  >
+</app-custom-selector>
+</div>
+<div>
+  
   <h4>Select Genre</h4>
   <app-custom-selector
     [selectedItems]="selectedGenres"
     [nonSelectedItems]="nonSelectedGenres"
   ></app-custom-selector>
+  </div>
 
-  <h4>Select Actor</h4>
+  <div class="ml-1">
+    <h4>Select Actor</h4>
   <app-actors-autocompelete [selectedActors]="selectedActor"></app-actors-autocompelete>
+  </div>
+</div>
+
+   <h4>Summary</h4>
+  <app-markdown
+    [markdownContent]="movie?.biography"
+    [label]="'Summary'"
+    (changeMarkDown)="changeMarkDown($event)"
+  ></app-markdown>
+  
   <button
     type="submit"
     mat-flat-button

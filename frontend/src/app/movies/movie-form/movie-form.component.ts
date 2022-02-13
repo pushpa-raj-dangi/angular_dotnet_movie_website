@@ -14,6 +14,8 @@ export class MovieFormComponent implements OnInit {
   saveMovies:EventEmitter<MovieCreateDto> = new EventEmitter<MovieCreateDto>();
 
   @Input()
+  title: any;
+  @Input()
   movie: MovieCreateDto | any;
 
   movieForm: FormGroup | any;
@@ -26,10 +28,13 @@ export class MovieFormComponent implements OnInit {
   nonSelectedTheaters: MultiSelector[] = [];
 
 
+  @Input()
   selectedActor: ActorsMovieDto[] | any = [];
   
 
+  @Input()
   selectedGenres: MultiSelector[] = [];
+  @Input()
   selectedTheaters: MultiSelector[] = [];
 
   constructor(private fb: FormBuilder) {}

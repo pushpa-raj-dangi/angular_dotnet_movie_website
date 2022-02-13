@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
 using backend.DTOs;
-using backend.DTOs.Actor;
 using backend.DTOs.Genre;
 using backend.DTOs.Movie;
 using backend.DTOs.Theater;
@@ -30,20 +30,75 @@ namespace backend.Controllers
 
         }
 
+
+
         [HttpGet]
-        public async Task<ActionResult<List<ActorDto>>> Actors([FromQuery] PaginationDto paginationDto)
+        public async Task<ActionResult<HomeDto>> Get()
         {
 
-            var queryable = _context.Actors.AsQueryable();
+            var top = 6;
+            var today = DateTime.Today;
+            var upcomings = await _context
+            .Movies.Where(x => x.ReleaseDate > today)
+            .OrderBy(x => x.ReleaseDate)
+            .Take(top)
+            .ToListAsync();
 
-            await HttpContext.InsertParameterPaginatinInHeader(queryable);
+            var inTheaters = await _context.Movies.Where(x => x.InTheater)
+            .OrderBy(x => x.ReleaseDate)
+            .Take(top)
+            .ToListAsync();
+            var homeDto = new HomeDto
+            {
+                Upcomings = _mapper.Map<List<MovieDto>>(upcomings),
+                InTheaters = _mapper.Map<List<MovieDto>>(inTheaters)
+            };
 
-            var actors = await queryable.OrderBy(actors => actors.Name).Paginate(paginationDto).ToListAsync();
-            return Ok(_mapper.Map<List<ActorDto>>(actors));
+            return Ok(homeDto);
+
+
         }
 
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<MovieDto>>> Filter([FromQuery] MovieFilterDto filterDto)
+        {
+            var queryable = _context.Movies.AsQueryable();
+
+            if (queryable == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(filterDto.Name))
+            {
+                queryable = queryable.Where(x => x.Name.Contains(filterDto.Name));
+            }
+
+            if (filterDto.Upcomings)
+            {
+                queryable = queryable.Where(x => x.ReleaseDate > DateTime.Today);
+            }
+
+            if (filterDto.InTheaters)
+            {
+                queryable = queryable.Where(x => x.InTheater);
+            }
+
+            if (filterDto.GenreId != 0)
+            {
+                queryable = queryable.Where(x => x.MoviesGenres.Select(y => y.GenreId).Contains(filterDto.GenreId));
+            }
+
+
+            await HttpContext.InsertParameterPaginatinInHeader(queryable);
+            var movies = await queryable.OrderBy(x => x.Name).Paginate(filterDto.PaginationDto).ToListAsync();
+
+            return Ok(_mapper.Map<List<MovieDto>>(movies));
+        }
+
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<MovieDto>> Movie(int id)
+        public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
             var movie = await _context.Movies.Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
             .Include(x => x.MoviesTheaters).ThenInclude(x => x.Theater).Include(x => x.MoviesActors).ThenInclude(x => x.Actor)
@@ -58,6 +113,42 @@ namespace backend.Controllers
             return Ok(dto);
         }
 
+
+
+        [HttpGet("putget/{id:int}")]
+        public async Task<ActionResult<MoviePutGetDto>> PutMovieGet(int id)
+        {
+            var movies = await GetMovie(id);
+
+            if (movies.Result is NotFoundResult)
+            {
+                return NotFound();
+            }
+
+            var movie = movies.Value;
+            var genresSelectedIds = movie.Genres.Select(x => x.Id).ToList();
+            var nonSelectedGenres = await _context.Genres.Where(x => !genresSelectedIds.Contains(x.Id))
+                .ToListAsync();
+
+            var movieTheatersIds = movie.Theaters.Select(x => x.Id).ToList();
+            var nonSelectedMovieTheaters = await _context.Theaters.Where(x =>
+            !movieTheatersIds.Contains(x.Id)).ToListAsync();
+
+            var nonSelectedGenresDTOs = _mapper.Map<List<GenreDto>>(nonSelectedGenres);
+            var nonSelectedMovieTheatersDTO = _mapper.Map<List<TheaterDto>>(nonSelectedMovieTheaters);
+
+            var response = new MoviePutGetDto
+            {
+                Movie = movie,
+                SelectedGenres = movie.Genres,
+                NonSelectedGenres = nonSelectedGenresDTOs,
+                NonSelectedTheaters = nonSelectedMovieTheatersDTO,
+                Actors = movie.Actors
+            };
+
+            return response;
+
+        }
 
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] MovieCreateDto movieCreateDto)
@@ -77,17 +168,22 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromForm] MovieCreateDto movieCreateDto)
         {
-            var result = await _context.Actors.FindAsync(id);
-            if (result == null)
+            var movie = await _context.Movies.Include(x => x.MoviesActors)
+            .Include(x => x.MoviesGenres).Include(x => x.MoviesTheaters)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (movie == null)
             {
                 return NotFound();
             }
-            result = _mapper.Map(movieCreateDto, result);
-
+            movie = _mapper.Map(movieCreateDto, movie);
             if (movieCreateDto.Poster != null)
             {
-                result.Picture = await _fileService.EditFile(containerName, movieCreateDto.Poster, result.Picture);
+                movie.Poster = await _fileService.EditFile(containerName, movieCreateDto.Poster, movie.Poster);
+
             }
+
+            AnnotateActorOrder(movie);
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -108,14 +204,14 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var actor = await _context.Actors.FindAsync(id);
-            if (actor == null)
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
             {
                 return NotFound();
             }
-            await _fileService.DeleteFile(actor.Picture, containerName);
-            _context.Remove(actor);
+            _context.Remove(movie);
             await _context.SaveChangesAsync();
+            await _fileService.DeleteFile(movie.Poster, containerName);
             return Ok(200);
         }
 

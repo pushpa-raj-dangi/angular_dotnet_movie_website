@@ -4,7 +4,7 @@ import { GenreDto } from './../genres/genre.model';
 export interface MovieCreateDto {
   name: string;
   summary: string;
-  inTheaters: boolean;
+  inTheater: boolean;
   releaseDate: Date;
   poster: File;
   trailer: string;
@@ -30,4 +30,21 @@ export interface MoviePostGetDto
   genres: GenreDto[];
   theaters:Theater[];
 
+}
+
+export interface MoviePutDto{
+  movie: movieDto;
+  selectedGenre: GenreDto[];
+  nonSelectedGenre: GenreDto[];
+  selectedTheater: Theater[];
+  nonSelectedTheater: Theater[];
+  actors: ActorsMovieDto[];
+  
+
+}
+
+
+export interface HomeDto{
+  inTheaters: movieDto[];
+  upcomings: movieDto[];
 }

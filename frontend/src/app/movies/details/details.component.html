@@ -1,1 +1,62 @@
-<p>details works!</p>
+<div *ngIf="movie" style="display: flex;">
+    <div>
+        <h2>{{movie.name}} ({{releaseDate.getFullYear()}})</h2>
+<div class="d-flex">
+        <mat-chip-list class="mr-1 mb-1">
+            <mat-chip [routerLink]="['/movies/filter']" [queryParams]="{genreId:genre.id}" *ngFor="let genre of movie.genres">
+                {{genre.name}}
+            </mat-chip>
+        </mat-chip-list> | {{releaseDate.toDateString()}} | Average : 0.0 | Your vote : 0.0
+</div>
+        <div style="display:flex">
+            <span style="display:inline-block;margin-right:1rem">
+                <img [src]="movie?.poster" style="width: 225px;" alt="">
+            </span>
+
+            <div *ngIf="movie.trailer">
+                <iframe width="560px" height="330px" [src]="trailerUrl" allow="accelerometer; autoplay; encrypted-media;gyroscope;picture-in-picture" frameborder="0"></iframe>
+            </div>
+
+        </div>
+        <div style="margin-top:1rem">
+            <h3>
+                Summary
+            </h3>
+
+            <div>
+                  <markdown [data]="movie.summery" ngPreserveWhitespaces></markdown>
+
+            </div>
+
+            <div style="margin-top: 1rem;">
+                <h3>Actors</h3>
+
+                <div  style="flex-direction:column">
+                    <div *ngFor="let item of movie.actors">
+                        <img [src]="item.picture" alt="" style="width: 40px;
+    vertical-align: center;
+    height: 40px;
+    object-fit: cover;">
+                        <span style="display:inline-block;width:200px;margin-left: 1rem;">
+                        {{item.name}}
+                        </span>
+                        <span style="display:inline-block;width:45px">
+                        ...
+                        </span>
+
+                        <span>
+                            {{item.character}}
+                        </span>
+                        {{item.iTeaters}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding-left:1rem;position:relative;width:100%" *ngIf="cordinates.length > 0">
+    <h2> Current in followig Theaters.</h2>
+    <app-map [initialCoordinates]="cordinates"></app-map>
+    </div>
+</div>
+<mat-spinner *ngIf="!movie"></mat-spinner>

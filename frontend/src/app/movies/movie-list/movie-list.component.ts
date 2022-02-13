@@ -1,4 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { MoviesService } from './../movies.service';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DialogComponent } from 'src/app/utils/dialog/dialog.component';
 
 @Component({
   selector: 'app-movie-list',
@@ -8,7 +12,30 @@ import { Component, Input, OnInit } from '@angular/core';
 export class MovieListComponent implements OnInit {
   @Input()
   movies: any = [];
-  constructor() {}
+
+  @Output()
+  onDelete = new EventEmitter<void>();
+  constructor(private movieSerivce:MoviesService,  public dialog: MatDialog,
+    private _snack: MatSnackBar) {}
 
   ngOnInit(): void {}
+  
+  
+  openDialog(id: number): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '400px',
+      data: { condition: false, id: id },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.condition === true) {
+        this.movieSerivce.delete(result.id).subscribe(() => {
+          this._snack.open('Deleted Sucess', 'close', { duration: 500 });
+        });
+      }
+    });
+  }
+
+
+
 }

@@ -40,6 +40,7 @@ import { DialogComponent } from './utils/dialog/dialog.component';
 import { ToastComponent } from './utils/toast/toast.component';
 import { CustomListComponent } from './utils/custom-list/custom-list.component';
 import { DetailsComponent } from './movies/details/details.component';
+import { AuthorizeViewComponent } from './account/authorize-view/authorize-view.component';
 
 
 @NgModule({
@@ -75,6 +76,7 @@ import { DetailsComponent } from './movies/details/details.component';
     ToastComponent,
     CustomListComponent,
     DetailsComponent,
+    AuthorizeViewComponent,
 
   ],
   imports: [

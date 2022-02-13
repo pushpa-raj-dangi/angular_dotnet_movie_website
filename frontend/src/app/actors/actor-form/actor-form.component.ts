@@ -12,6 +12,9 @@ export class ActorFormComponent implements OnInit {
   actor: any;
 
   @Input()
+  title: any;
+
+  @Input()
   markdownContent: any;
 
   actorForm: FormGroup | any;
