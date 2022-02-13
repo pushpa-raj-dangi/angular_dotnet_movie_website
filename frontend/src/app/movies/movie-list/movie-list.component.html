@@ -11,11 +11,20 @@
       <a routerLink="/movies/edit/{{movie.id}}">
         <h2>{{ movie?.name }}</h2>
       </a>
-
-    <button routerLink="/movies/edit/{{movie.id}}" mat-flat-button color="primary">Edit</button>
+      <app-authorize-view [role]="'admin'">
+        <ng-container authorized>
+          <button routerLink="/movies/edit/{{movie.id}}" mat-flat-button color="primary">Edit</button>
     <button  class="ml-1" mat-flat-button color="accent">Delete</button>
+        </ng-container>
+
+        <ng-container notAuthorized>
+            You are not authorized.
+        </ng-container>
+
+    </app-authorize-view>
+
   </mat-card>
   </div>
-  
+
 </div>
 

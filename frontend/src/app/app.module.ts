@@ -41,6 +41,9 @@ import { ToastComponent } from './utils/toast/toast.component';
 import { CustomListComponent } from './utils/custom-list/custom-list.component';
 import { DetailsComponent } from './movies/details/details.component';
 import { AuthorizeViewComponent } from './account/authorize-view/authorize-view.component';
+import { LoginComponent } from './account/login/login.component';
+import { RegisterComponent } from './account/register/register.component';
+import { AccountFormComponent } from './account/account-form/account-form.component';
 
 
 @NgModule({
@@ -77,6 +80,9 @@ import { AuthorizeViewComponent } from './account/authorize-view/authorize-view.
     CustomListComponent,
     DetailsComponent,
     AuthorizeViewComponent,
+    LoginComponent,
+    RegisterComponent,
+    AccountFormComponent,
 
   ],
   imports: [

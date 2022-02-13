@@ -1,9 +1,10 @@
 using backend.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Data
 {
-    public class StoreContext : DbContext
+    public class StoreContext : IdentityDbContext
     {
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
