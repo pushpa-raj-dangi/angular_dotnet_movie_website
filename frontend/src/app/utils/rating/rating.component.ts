@@ -1,3 +1,5 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AccountService } from './../../account/account.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
@@ -14,7 +16,7 @@ previousRate=0;
 onRating:EventEmitter<number> = new EventEmitter<number>();
 @Input()
 selectedRate = 0;
-  constructor() { }
+  constructor(private accountService:AccountService, private snack:MatSnackBar) { }
 
   ngOnInit(): void {
     this.maxRatingArr = Array(this.maxRating).fill(0);
@@ -35,8 +37,14 @@ selectedRate = 0;
 
   handleMouseClick(index:number){
 
+   if(this.accountService.isAuthenticated()){
     this.selectedRate = index+1;
     this.previousRate = this.selectedRate;
-    this.onRating.emit(this.selectedRate);
+     this.onRating.emit(this.selectedRate);
+     console.log("rating: "+"authorized");
+     
+   }else{
+    this.snack.open("You must be logged in to rate", "", {duration:2000});
+   }  
   }
 }

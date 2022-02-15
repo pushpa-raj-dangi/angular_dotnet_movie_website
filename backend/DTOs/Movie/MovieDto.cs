@@ -16,6 +16,10 @@ namespace backend.DTOs.Movie
         public bool InTheater { get; set; }
         public string Trailer { get; set; }
 
+
+        public double AverageVote { get; set; }
+        public int UserVote { get; set; }
+
         public List<GenreDto> Genres { get; set; }
         public List<TheaterDto> Theaters { get; set; }
         public List<ActorsMovieDto> Actors { get; set; }

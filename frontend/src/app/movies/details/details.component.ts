@@ -1,9 +1,11 @@
+import { RatingService } from './../../utils/rating.service';
 import { Coordinate, CoordinateWithMessage } from './../../utils/map/coordinate';
 import { movieDto } from './../movie.molde';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { MoviesService } from './../movies.service';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-details',
@@ -17,7 +19,9 @@ export class DetailsComponent implements OnInit {
   trailerUrl: SafeResourceUrl | any;
   cordinates: CoordinateWithMessage[] = [];
 
-  constructor(private movieService: MoviesService, private activatedRouter:ActivatedRoute, private sanitize:DomSanitizer) { }
+  constructor(private movieService: MoviesService,
+    private activatedRouter: ActivatedRoute,
+    private sanitize: DomSanitizer, private ratingService:RatingService, private snack:MatSnackBar) { }
 
   ngOnInit(): void {
     this.loadMovies();  
@@ -40,6 +44,15 @@ export class DetailsComponent implements OnInit {
     })
   }
   
+
+  onRating(value:any)
+  {
+    this.ratingService.rate(this.movie.id, value).subscribe((data:any) => {
+     this.snack.open("Rating saved", "", {duration:2000});
+    })
+  }
+
+
   generateYoutubeUrlEmbeded(trailerUrl: any): any {
     if (!trailerUrl) {
       return "";

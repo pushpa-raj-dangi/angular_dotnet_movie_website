@@ -3,16 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
-using backend.DTOs;
 using backend.DTOs.Genre;
-using backend.Filters;
 using backend.Models;
-using backend.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class GenresController : BaseApiController
     {
         private readonly StoreContext _context;
@@ -26,7 +26,8 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        [ServiceFilter(typeof(CustomFilter))]
+        // [ServiceFilter(typeof(CustomFilter))]
+        [AllowAnonymous]
         public async Task<ActionResult<List<GenreDto>>> Genres()
         {
 

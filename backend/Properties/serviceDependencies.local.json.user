@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2022-02-14T16:24:12.8966329Z"
+    },
+    "appInsights1": {
+      "restored": true,
+      "restoreTime": "2022-02-14T16:24:56.5013204Z"
+    }
+  },
+  "parameters": {
+    "appInsights1.resourceGroupName": {
+      "Name": "appInsights1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "news"
+    },
+    "appInsights1.subscriptionId": {
+      "Name": "appInsights1.subscriptionId",
+      "Type": "subscription",
+      "Value": "3560a9f8-f265-4e2c-9bc6-c745ce4a1a9e"
+    }
+  }
+}

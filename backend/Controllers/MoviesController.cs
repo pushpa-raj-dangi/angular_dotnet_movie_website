@@ -10,20 +10,27 @@ using backend.DTOs.Movie;
 using backend.DTOs.Theater;
 using backend.Helpers;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class MoviesController : BaseApiController
     {
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
         private readonly IStorageService _fileService;
         private readonly string containerName = "actors";
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MoviesController(StoreContext context, IMapper mapper, IStorageService fileService)
+        public MoviesController(StoreContext context, IMapper mapper, IStorageService fileService, UserManager<IdentityUser> userManager)
         {
+            _userManager = userManager;
             _fileService = fileService;
             _mapper = mapper;
             _context = context;
@@ -33,6 +40,7 @@ namespace backend.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<HomeDto>> Get()
         {
 
@@ -60,44 +68,43 @@ namespace backend.Controllers
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<List<MovieDto>>> Filter([FromQuery] MovieFilterDto filterDto)
+        [AllowAnonymous]
+        public async Task<ActionResult<List<MovieDto>>> Filter([FromQuery] MovieFilterDto filterMoviesDTO)
         {
-            var queryable = _context.Movies.AsQueryable();
+            var moviesQueryable = _context.Movies.AsQueryable();
 
-            if (queryable == null)
+            if (!string.IsNullOrEmpty(filterMoviesDTO.Name))
             {
-                return NotFound();
+                moviesQueryable = moviesQueryable.Where(x => x.Name.Contains(filterMoviesDTO.Name));
             }
 
-            if (!string.IsNullOrEmpty(filterDto.Name))
+            if (filterMoviesDTO.InTheaters)
             {
-                queryable = queryable.Where(x => x.Name.Contains(filterDto.Name));
+                moviesQueryable = moviesQueryable.Where(x => x.InTheater);
             }
 
-            if (filterDto.Upcomings)
+            if (filterMoviesDTO.Upcomings)
             {
-                queryable = queryable.Where(x => x.ReleaseDate > DateTime.Today);
+                var today = DateTime.Today;
+                moviesQueryable = moviesQueryable.Where(x => x.ReleaseDate > today);
             }
 
-            if (filterDto.InTheaters)
+            if (filterMoviesDTO.GenreId != 0)
             {
-                queryable = queryable.Where(x => x.InTheater);
+                moviesQueryable = moviesQueryable
+                    .Where(x => x.MoviesGenres.Select(y => y.GenreId)
+                    .Contains(filterMoviesDTO.GenreId));
             }
 
-            if (filterDto.GenreId != 0)
-            {
-                queryable = queryable.Where(x => x.MoviesGenres.Select(y => y.GenreId).Contains(filterDto.GenreId));
-            }
-
-
-            await HttpContext.InsertParameterPaginatinInHeader(queryable);
-            var movies = await queryable.OrderBy(x => x.Name).Paginate(filterDto.PaginationDto).ToListAsync();
-
-            return Ok(_mapper.Map<List<MovieDto>>(movies));
+            await HttpContext.InsertParameterPaginatinInHeader(moviesQueryable);
+            var movies = await moviesQueryable.OrderBy(x => x.Name).Paginate(filterMoviesDTO.PaginationDto)
+                .ToListAsync();
+            return _mapper.Map<List<MovieDto>>(movies);
         }
 
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
             var movie = await _context.Movies.Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
@@ -107,8 +114,33 @@ namespace backend.Controllers
             {
                 return NotFound();
             }
+            var averageVote = 0.0;
+            var userVote = 0;
+
+            if (await _context.Ratings.AnyAsync(x => x.MovieId == id))
+            {
+                averageVote = await _context.Ratings.Where(x => x.MovieId == id).AverageAsync(x => x.Rate);
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "email").Value;
+                    var user = await _userManager.FindByEmailAsync(email);
+
+                    var userId = user.Id;
+                    var ratingDb = await _context.Ratings.FirstOrDefaultAsync(x => x.MovieId == id && x.UserId == userId);
+                    if (ratingDb != null)
+                    {
+                        userVote = ratingDb.Rate;
+                    }
+
+
+                }
+
+            }
+
             var dto = _mapper.Map<MovieDto>(movie);
             dto.Actors = dto.Actors.OrderBy(x => x.Order).ToList();
+            dto.UserVote = userVote;
+            dto.AverageVote = averageVote;
 
             return Ok(dto);
         }
@@ -209,6 +241,8 @@ namespace backend.Controllers
             {
                 return NotFound();
             }
+
+
             _context.Remove(movie);
             await _context.SaveChangesAsync();
             await _fileService.DeleteFile(movie.Poster, containerName);

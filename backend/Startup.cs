@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using AutoMapper;
 using backend.Data;
@@ -25,7 +26,10 @@ namespace backend
     {
         public Startup(IConfiguration configuration)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -65,21 +69,27 @@ namespace backend
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<StoreContext>().AddDefaultTokenProviders();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["jwtkey"])
-                    ),
-                    ClockSkew = TimeSpan.Zero
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["jwtkey"])),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
 
-                };
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsAdmin", policy => policy.RequireClaim("role", "admin"));
             });
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
             // services.AddTransient<CustomFilter>();
 
         }
@@ -98,6 +108,7 @@ namespace backend
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using AutoMapper;
 using backend.DTOs;
+using backend.DTOs.Account;
 using backend.DTOs.Actor;
 using backend.DTOs.Genre;
 using backend.DTOs.Movie;
 using backend.DTOs.Theater;
 using backend.Models;
+using Microsoft.AspNetCore.Identity;
 using NetTopologySuite.Geometries;
 
 namespace backend.Helpers
@@ -41,6 +43,7 @@ namespace backend.Helpers
                            .ForMember(x => x.Theaters, options => options.MapFrom(MapMovieTheatersMovies))
                            .ForMember(x => x.Actors, options => options.MapFrom(MapMoviesActors));
 
+            CreateMap<IdentityUser, UserDto>();
 
 
         }

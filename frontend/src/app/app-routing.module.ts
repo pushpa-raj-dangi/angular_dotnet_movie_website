@@ -1,3 +1,4 @@
+import { IndexAccountComponent } from './account/index-account/index-account.component';
 import { RegisterComponent } from './account/register/register.component';
 import { LoginComponent } from './account/login/login.component';
 import { IsAdminGuard } from './guards/is-admin.guard';
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'theaters/create', component: CreateTheaterComponent, canActivate:[IsAdminGuard] },
   { path: 'theaters/edit/:id', component: EditTheaterComponent, canActivate:[IsAdminGuard] },
 
+  {path:'users', component:IndexAccountComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
 

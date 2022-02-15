@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2022-02-14T16:07:37.3865717Z"
+    },
+    "identityapp1": {
+      "restored": true,
+      "restoreTime": "2022-02-14T16:09:43.7561667Z"
+    },
+    "storage1": {
+      "restored": true,
+      "restoreTime": "2022-02-14T16:09:46.8529741Z"
+    }
+  },
+  "parameters": {
+    "mssql1.subscriptionId": {
+      "Name": "mssql1.subscriptionId",
+      "Type": "subscription",
+      "Value": "3560a9f8-f265-4e2c-9bc6-c745ce4a1a9e"
+    },
+    "mssql1.resourceGroupName": {
+      "Name": "mssql1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "news"
+    }
+  }
+}

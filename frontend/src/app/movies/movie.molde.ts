@@ -22,7 +22,9 @@ export interface movieDto {
   trailer: string;
   genres: GenreDto[];
    theaters: Theater[];
-  actors:ActorsMovieDto[];
+  actors: ActorsMovieDto[];
+  userVote: number;
+  
 }
 
 export interface MoviePostGetDto

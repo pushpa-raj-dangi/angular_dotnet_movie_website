@@ -1,3 +1,4 @@
+import { AccountService } from './../account/account.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavComponent implements OnInit {
 
-  constructor() { }
+  constructor(public accountService:AccountService) { }
 
   ngOnInit(): void {
+    
   }
+
+
 
 }

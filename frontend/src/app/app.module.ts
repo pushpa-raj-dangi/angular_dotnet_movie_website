@@ -1,3 +1,4 @@
+import { JwtInterceptor } from './account/jwt.interceptor';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { MaterialModule } from './material/material.module';
@@ -34,7 +35,7 @@ import { MapComponent } from './utils/map/map.component';
 import { MovieFormComponent } from './movies/movie-form/movie-form.component';
 import { CustomSelectorComponent } from './utils/custom-selector/custom-selector.component';
 import { ActorsAutocompeleteComponent } from './actors/actors-autocompelete/actors-autocompelete.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorsComponent } from './utils/errors/errors.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { ToastComponent } from './utils/toast/toast.component';
@@ -44,6 +45,7 @@ import { AuthorizeViewComponent } from './account/authorize-view/authorize-view.
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
 import { AccountFormComponent } from './account/account-form/account-form.component';
+import { IndexAccountComponent } from './account/index-account/index-account.component';
 
 
 @NgModule({
@@ -83,6 +85,7 @@ import { AccountFormComponent } from './account/account-form/account-form.compon
     LoginComponent,
     RegisterComponent,
     AccountFormComponent,
+    IndexAccountComponent,
 
   ],
   imports: [
@@ -96,7 +99,12 @@ import { AccountFormComponent } from './account/account-form/account-form.compon
     FormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass:JwtInterceptor,
+    multi: true
+  }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

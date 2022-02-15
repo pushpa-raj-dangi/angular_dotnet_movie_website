@@ -12,6 +12,8 @@ using backend.DTOs.Account;
 using backend.DTOs.Actor;
 using backend.Helpers;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers
 {
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class AccountsController : BaseApiController
     {
         private readonly StoreContext _context;
@@ -55,7 +59,7 @@ namespace backend.Controllers
 
             if (result.Succeeded)
             {
-                return CreateToken(credentials);
+                return await CreateToken(credentials);
             }
             else
             {
@@ -67,12 +71,13 @@ namespace backend.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] UserCredentials credentials)
         {
             var result = await _signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return CreateToken(credentials);
+                return await CreateToken(credentials);
             }
             else
             {
@@ -80,15 +85,49 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+
+        public async Task<ActionResult<List<UserDto>>> Get([FromQuery] PaginationDto paginationDto)
+        {
+            var queryable = _context.Users.AsQueryable();
+            await HttpContext.InsertParameterPaginatinInHeader(queryable);
+            var users = await queryable.OrderBy(x => x.Email).Paginate(paginationDto).ToListAsync();
+            return Ok(_mapper.Map<List<UserDto>>(users));
+        }
+
+        [HttpPost("createAdmin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+
+        public async Task<ActionResult> CreateAdmin([FromBody] string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            await _userManager.AddClaimAsync(user, new Claim("role", "admin"));
+            return Ok();
+        }
 
 
+        [HttpPost("removeAdmin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+        public async Task<ActionResult> DeleteAdmin([FromBody] string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            await _userManager.RemoveClaimAsync(user, new Claim("role", "admin"));
+            return Ok();
+        }
 
-        private AuthenticationResponse CreateToken(UserCredentials userCredentials)
+        private async Task<AuthenticationResponse> CreateToken(UserCredentials userCredentials)
         {
             var claims = new List<Claim>()
             {
                 new Claim("email",userCredentials.Email)
             };
+
+            var user = await _userManager.FindByNameAsync(userCredentials.Email);
+            var claimDB = await _userManager.GetClaimsAsync(user);
+
+            claims.AddRange(claimDB);
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_coniguration["jwtkey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -9,3 +9,9 @@ export interface AuthenticationResponse
   token:string;
   expiration:Date;
 }
+
+
+export interface UserDto {
+  id: number;
+  email: string;
+}

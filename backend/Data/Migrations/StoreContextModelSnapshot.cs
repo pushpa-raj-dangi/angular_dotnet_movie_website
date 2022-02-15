@@ -342,6 +342,31 @@ namespace backend.Data.Migrations
                     b.ToTable("MoviesTheaters");
                 });
 
+            modelBuilder.Entity("backend.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("backend.Models.Theater", b =>
                 {
                     b.Property<int>("Id")
@@ -468,6 +493,23 @@ namespace backend.Data.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("Theater");
+                });
+
+            modelBuilder.Entity("backend.Models.Rating", b =>
+                {
+                    b.HasOne("backend.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("backend.Models.Movie", b =>

@@ -28,6 +28,8 @@ namespace backend.Data
         public DbSet<MovieTheater> MoviesTheaters { get; set; }
         public DbSet<MovieGenre> MoviesGenres { get; set; }
 
+        public DbSet<Rating> Ratings { get; set; }
+
 
 
     }

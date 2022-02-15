@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAMlBpAbu/rU2eGS4vAdRVXgAAAAACAAAAAAAQZgAAAAEAACAAAABYjZON9hm9wO1tCQm4t9wVanHTnUe15RhkyBK+ayjk5wAAAAAOgAAAAAIAACAAAADa8UYc8I7iVtBcHAlJfxmtsb31kkJ+wSDRrrLj8woNKIAAAAD1fpa3K+FEtaBrWo3nsgC0oXmgN2C5pTbNEN9G4zGIZa0IY45TS4JBl+yxrJEyRHSaty6O2eSBsPKNkKAwUPYXs+r1C8ruGeTwtXh9Gwjx4JHnwBZgDhxA+iuUUusoOon2wgDUFZck+MOUNUWI2OffSHZ/6T1ewxMUMp2n1wjBtEAAAABzi+w6HjQrSvnpIp6rnF6lAx2Tb85qanHXsnC2yI9fOd73rBZ/C0XvwA6VdH9EbS/B/hvAadvF3e8aq501Zn3x</EncryptedPassword>
+    <History>True|2022-02-14T16:14:01.0774079Z;True|2022-02-14T21:56:30.2162724+05:45;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="backend.Data.StoreContext">
+      <Value>Data Source=tcp:moviebackend2022.database.windows.net,1433%3bInitial Catalog=backend_db%3bUser Id=pushpa%40moviebackend2022%3bPassword=dc%40Don1234456#</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

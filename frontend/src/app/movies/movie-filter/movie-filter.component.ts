@@ -41,7 +41,7 @@ export class MovieFilterComponent implements OnInit {
     this.initialFormValue = this.filterForm.value;
     this.readParamsFromUrl();
 
-
+    
     this.genreService.getGenres().subscribe((genres: any) => {
       this.genres = genres;
 
@@ -87,28 +87,30 @@ export class MovieFilterComponent implements OnInit {
     })
 }
   private writeParamsInUrl() {
-    const queryString = [];
+    const queryStrings = [];
+
     const formValues = this.filterForm.value;
 
-    if (formValues.name) {
-      formValues.push(`name=${formValues.name}`)
-    };
-    if (formValues.gerneId != '0') {
-      queryString.push(`genreId=${formValues.genreId}`);
+    if (formValues.name){
+      queryStrings.push(`name=${formValues.name}`);
     }
 
-    if (formValues.upcomings) {
-      queryString.push(`upcomings=${formValues.upcomings}`);
+    if (formValues.genreId != '0'){
+      queryStrings.push(`genreId=${formValues.genreId}`);
     }
 
-    if (formValues.inTheater)
-    {
-           queryString.push(`inTheater=${formValues.inTheater}`);
-
+    if (formValues.upcomings){
+      queryStrings.push(`upcomings=${formValues.upcomings}`);
     }
-    queryString.push(`page=${this.currentPage}`);
-    queryString.push(`page=${this.currentPage}`);
-    this.location.replaceState('movies/filter', queryString.join('&'));
+
+    if (formValues.inTheaters){
+      queryStrings.push(`inTheaters=${formValues.inTheaters}`);
+    }
+
+    queryStrings.push(`page=${this.currentPage}`);
+    queryStrings.push(`perPage=${this.perPage}`);
+
+    this.location.replaceState('movies/filter', queryStrings.join('&'));
       
   }
 
